@@ -1,12 +1,7 @@
 public class Knight extends Piece {
 
-    public Knight(Colour colour) {
-        super(colour);
-    }
-
-    @Override
-    public void move() {
-
+    public Knight(Colour colour, Position currentPosition) {
+        super(colour, currentPosition);
     }
 
     @Override

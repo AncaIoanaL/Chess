@@ -1,12 +1,7 @@
 public class Bishop extends Piece {
 
-    public Bishop(Colour colour) {
-        super(colour);
-    }
-
-    @Override
-    public void move() {
-
+    public Bishop(Colour colour, Position currentPosition) {
+        super(colour, currentPosition);
     }
 
     @Override

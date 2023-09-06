@@ -1,12 +1,7 @@
 public class Queen extends Piece {
 
-    public Queen(Colour colour) {
-        super(colour);
-    }
-
-    @Override
-    public void move() {
-
+    public Queen(Colour colour, Position currentPosition) {
+        super(colour, currentPosition);
     }
 
     @Override

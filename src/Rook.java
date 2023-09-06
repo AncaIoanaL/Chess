@@ -1,12 +1,7 @@
 public class Rook extends Piece {
 
-    public Rook(Colour colour) {
-        super(colour);
-    }
-
-    @Override
-    public void move() {
-
+    public Rook(Colour colour, Position currentPosition) {
+        super(colour, currentPosition);
     }
 
     @Override
