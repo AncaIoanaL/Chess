@@ -24,7 +24,7 @@ public class ChessGame {
                 Position newPosition = new Position(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
 
                 Piece pieceToMove = BOARD[currentPosition.getRow()][currentPosition.getColumn()];
-                if (pieceToMove != null &&  pieceToMove.validateMove(newPosition, BOARD)) {
+                if (pieceToMove != null && pieceToMove.validateMove(newPosition, BOARD)) {
                     pieceToMove.move(newPosition, BOARD);
                     playerNumber = playerNumber == 1 ? 2 : 1;
                 } else {

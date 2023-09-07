@@ -12,10 +12,22 @@ public class Pawn extends Piece {
 
     }
 
+    private boolean validateInBetweenPositions(Piece[][] BOARD) {
+        if (getCurrentPosition().equals(initialPosition)) {
+            if (Colour.BLACK.equals(getColour())) {
+                return BOARD[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn()] == null;
+            } else {
+                return BOARD[getCurrentPosition().getRow() - 1][getCurrentPosition().getColumn()] == null;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public boolean validateMove(Position newPosition, Piece[][] BOARD) {
         if (BOARD[newPosition.getRow()][newPosition.getColumn()] == null) {
-            return validateMove(newPosition);
+            return validateMove(newPosition) && validateInBetweenPositions(BOARD);
         } else if (BOARD[newPosition.getRow()][newPosition.getColumn()].getColour() != getColour()) {
             return validateAttack(newPosition);
         }
