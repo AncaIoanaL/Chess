@@ -23,7 +23,9 @@ public abstract class Piece {
     }
 
     public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        return BOARD[newPosition.getRow()][newPosition.getColumn()] == null || BOARD[newPosition.getRow()][newPosition.getColumn()].getColour() != getColour();
+        return BOARD[newPosition.getRow()][newPosition.getColumn()] == null ||
+                BOARD[newPosition.getRow()][newPosition.getColumn()].getColour() != getColour() ||
+                currentPosition != newPosition;
     }
 
     public abstract void attack();
