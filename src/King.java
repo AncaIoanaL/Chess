@@ -19,7 +19,7 @@ public class King extends Piece {
         int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
         int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
 
-        return super.validateMove(newPosition, BOARD)&& (rowDifference == 1 || columnDifference == 1);
+        return super.validateMove(newPosition, BOARD) && (rowDifference == 1 || columnDifference == 1);
     }
 
     @Override
