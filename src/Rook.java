@@ -40,9 +40,9 @@ public class Rook extends Piece {
 
     @Override
     public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        super.validateMove(newPosition, BOARD);
-
-        return validateInBetweenPositions(newPosition, BOARD) && (newPosition.getRow() == getCurrentPosition().getRow() || newPosition.getColumn() == getCurrentPosition().getColumn());
+        return super.validateMove(newPosition, BOARD) &&
+                validateInBetweenPositions(newPosition, BOARD) &&
+                (newPosition.getRow() == getCurrentPosition().getRow() || newPosition.getColumn() == getCurrentPosition().getColumn());
     }
 
     @Override
