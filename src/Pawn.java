@@ -56,7 +56,7 @@ public class Pawn extends Piece {
                 (newPosition.getColumn() == getCurrentPosition().getColumn() + 1 || newPosition.getColumn() == getCurrentPosition().getColumn() - 1);
     }
 
-    private boolean validateEnPassant(Position newPosition, Piece[][] BOARD) {
+    private boolean validatePawnPromotion(Position newPosition, Piece[][] BOARD) {
         if (Colour.WHITE.equals(BOARD[getCurrentPosition().getRow()][getCurrentPosition().getColumn()].getColour())) {
             for (int i = 0; i <= 7; i ++) {
                 if (newPosition.getRow() == 0 && newPosition.getColumn() == i) {
