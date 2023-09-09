@@ -14,7 +14,24 @@ public class Queen extends Piece {
         super.move(newPosition, BOARD);
     }
 
-    private boolean validateInBetweenPositionsRook(Position newPosition, Piece[][] BOARD) {
+    @Override
+    public boolean validateMove(Position newPosition, Piece[][] BOARD) {
+        int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
+        int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
+
+        return super.validateMove(newPosition, BOARD) && (validateInBetweenPositionsRookLikeTrajectory(newPosition, BOARD) ||
+                validateInBetweenPositionsBishopLikeTrajectory(newPosition, BOARD)) &&
+                ((rowDifference == columnDifference) || (newPosition.getRow() == getCurrentPosition().getRow() ||
+                        newPosition.getColumn() == getCurrentPosition().getColumn()));
+
+    }
+
+    @Override
+    public String toString() {
+        return "Queen{" + getColour() + "}";
+    }
+
+    private boolean validateInBetweenPositionsRookLikeTrajectory(Position newPosition, Piece[][] BOARD) {
         if (getCurrentPosition().getColumn() != newPosition.getColumn()) {
             int columnDifference = getCurrentPosition().getColumn() - newPosition.getColumn();
             int minColumn = Math.min(newPosition.getColumn(), getCurrentPosition().getColumn());
@@ -38,7 +55,7 @@ public class Queen extends Piece {
         return true;
     }
 
-    private boolean validateInBetweenPositionsBishop(Position newPosition, Piece[][] BOARD) {
+    private boolean validateInBetweenPositionsBishopLikeTrajectory(Position newPosition, Piece[][] BOARD) {
         for (int i = 1; i <= Math.abs(getCurrentPosition().getColumn() - newPosition.getColumn()); i++) {
             if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
                 if (BOARD[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() - i] != null) {
@@ -60,22 +77,5 @@ public class Queen extends Piece {
         }
 
         return true;
-    }
-
-    @Override
-    public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
-        int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
-
-        return super.validateMove(newPosition, BOARD) && (validateInBetweenPositionsRook(newPosition, BOARD) ||
-                validateInBetweenPositionsBishop(newPosition, BOARD)) &&
-                ((rowDifference == columnDifference) || (newPosition.getRow() == getCurrentPosition().getRow() ||
-                        newPosition.getColumn() == getCurrentPosition().getColumn())) ;
-
-    }
-
-    @Override
-    public String toString() {
-        return "Queen{" + getColour() + "}";
     }
 }

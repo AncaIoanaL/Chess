@@ -16,14 +16,18 @@ public class Knight extends Piece {
 
     @Override
     public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
-        int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
-
-        return super.validateMove(newPosition, BOARD) && (rowDifference == 1 && columnDifference == 2 || rowDifference == 2 && columnDifference == 1);
+        return super.validateMove(newPosition, BOARD) && validateKnightMove(newPosition);
     }
 
     @Override
     public String toString() {
         return "Knight{" + getColour() + "}";
+    }
+
+    private boolean validateKnightMove(Position newPosition) {
+        int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
+        int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
+
+        return (rowDifference == 1 && columnDifference == 2 || rowDifference == 2 && columnDifference == 1);
     }
 }

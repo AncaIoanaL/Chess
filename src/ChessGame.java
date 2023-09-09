@@ -15,21 +15,11 @@ public class ChessGame {
 
         while (true) {
             try {
-                System.out.print("Player " + playerNumber + " enter current position: ");
-                String[] coordinates = scanner.nextLine().split(" ");
-
-                int row = 8 - Integer.parseInt(coordinates[0]);
-                int column = coordinates[1].charAt(0) - 65;
-                Position currentPosition = new Position(row, column);
-
-                System.out.print("Player " + playerNumber + " enter new position: ");
-                coordinates = scanner.nextLine().split(" ");
-
-                row = 8 - Integer.parseInt(coordinates[0]);
-                column = coordinates[1].charAt(0) - 65;
-                Position newPosition = new Position(row, column);
+                Position currentPosition = askPlayerForCurrentPosition(playerNumber, scanner);
+                Position newPosition = askPlayerForNewPosition(playerNumber, scanner);
 
                 Piece pieceToMove = BOARD[currentPosition.getRow()][currentPosition.getColumn()];
+
                 if (pieceToMove != null && pieceToMove.validateMove(newPosition, BOARD)) {
                     pieceToMove.move(newPosition, BOARD);
                     playerNumber = playerNumber == 1 ? 2 : 1;
@@ -43,6 +33,24 @@ public class ChessGame {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    private static Position askPlayerForCurrentPosition(int playerNumber, Scanner scanner) {
+        System.out.print("Player " + playerNumber + " enter current position: ");
+        String[] coordinates = scanner.nextLine().split(" ");
+
+        int row = 8 - Integer.parseInt(coordinates[0]);
+        int column = coordinates[1].charAt(0) - 65;
+        return new Position(row, column);
+    }
+
+    private static Position askPlayerForNewPosition(int playerNumber, Scanner scanner) {
+        System.out.print("Player " + playerNumber + " enter new position: ");
+        String[] coordinates = scanner.nextLine().split(" ");
+
+        int row = 8 - Integer.parseInt(coordinates[0]);
+        int column = coordinates[1].charAt(0) - 65;
+        return new Position(row, column);
     }
 
     private static void initialiseBoard() {
