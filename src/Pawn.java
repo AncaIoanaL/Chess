@@ -3,10 +3,20 @@ import java.util.Scanner;
 public class Pawn extends Piece {
 
     private final Position initialPosition;
+    private Position previousPosition;
 
     public Pawn(Colour colour, Position currentPosition) {
         super(colour, currentPosition);
         initialPosition = currentPosition;
+        previousPosition = currentPosition;
+    }
+
+    public Position getInitialPosition() {
+        return initialPosition;
+    }
+
+    public Position getPreviousPosition() {
+        return previousPosition;
     }
 
     @Override
@@ -15,6 +25,7 @@ public class Pawn extends Piece {
             BOARD[newPosition.getRow()][newPosition.getColumn()] = promotePawn(newPosition);
             BOARD[getCurrentPosition().getRow()][getCurrentPosition().getColumn()] = null;
         } else {
+            previousPosition = getCurrentPosition();
             super.move(newPosition, BOARD);
         }
     }
@@ -26,13 +37,9 @@ public class Pawn extends Piece {
 
     @Override
     public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        if (BOARD[newPosition.getRow()][newPosition.getColumn()] == null) {
-            return validateMove(newPosition) && validateInBetweenPositions(BOARD);
-        } else if (BOARD[newPosition.getRow()][newPosition.getColumn()].getColour() != getColour()) {
-            return validateAttack(newPosition);
-        }
-
-        return false;
+        return validatePawnEnPassant(newPosition, BOARD) ||
+                (validatePawnMove(newPosition, BOARD) && validatePawnInBetweenPositions(BOARD)) ||
+                validatePawnAttack(newPosition, BOARD);
     }
 
     @Override
@@ -40,8 +47,28 @@ public class Pawn extends Piece {
         return "Pawn{" + getColour() + "}";
     }
 
-    private boolean validateMove(Position newPosition) {
-        if (getCurrentPosition().getColumn() != newPosition.getColumn()) {
+    private boolean validatePawnEnPassant(Position newPosition, Piece[][] BOARD) {
+        if (Colour.BLACK.equals(getColour())) {
+            if (!(BOARD[newPosition.getRow() - 1][newPosition.getColumn()] instanceof Pawn whitePawn) || !(BOARD[newPosition.getRow() - 2][newPosition.getColumn()] instanceof Pawn otherBlackPawn)) {
+                return false;
+            }
+
+            return BOARD[newPosition.getRow()][newPosition.getColumn()] == null &&
+                    Colour.WHITE.equals(whitePawn.getColour()) && whitePawn.getPreviousPosition().equals(whitePawn.getInitialPosition()) &&
+                    Colour.BLACK.equals(otherBlackPawn.getColour());
+        } else {
+            if (!(BOARD[newPosition.getRow() + 1][newPosition.getColumn()] instanceof Pawn blackPawn) || !(BOARD[newPosition.getRow() + 2][newPosition.getColumn()] instanceof Pawn otherWhitePawn)) {
+                return false;
+            }
+
+            return BOARD[newPosition.getRow()][newPosition.getColumn()] == null &&
+                    Colour.BLACK.equals(blackPawn.getColour()) && blackPawn.getPreviousPosition().equals(blackPawn.getInitialPosition()) &&
+                    Colour.WHITE.equals(otherWhitePawn.getColour());
+        }
+    }
+
+    private boolean validatePawnMove(Position newPosition, Piece[][] BOARD) {
+        if (BOARD[newPosition.getRow()][newPosition.getColumn()] != null || getCurrentPosition().getColumn() != newPosition.getColumn()) {
             return false;
         }
 
@@ -54,7 +81,7 @@ public class Pawn extends Piece {
         }
     }
 
-    private boolean validateInBetweenPositions(Piece[][] BOARD) {
+    private boolean validatePawnInBetweenPositions(Piece[][] BOARD) {
         if (getCurrentPosition().equals(initialPosition)) {
             if (Colour.BLACK.equals(getColour())) {
                 return BOARD[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn()] == null;
@@ -66,7 +93,11 @@ public class Pawn extends Piece {
         return true;
     }
 
-    private boolean validateAttack(Position newPosition) {
+    private boolean validatePawnAttack(Position newPosition, Piece[][] BOARD) {
+        if (!getColour().equals(BOARD[newPosition.getRow()][newPosition.getColumn()].getColour())) {
+            return false;
+        }
+
         int moveBy = Colour.BLACK.equals(getColour()) ? 1 : -1;
 
         return (newPosition.getRow() == getCurrentPosition().getRow() + moveBy) &&

@@ -16,14 +16,18 @@ public class King extends Piece {
 
     @Override
     public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
-        int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
-
-        return super.validateMove(newPosition, BOARD) && (rowDifference == 1 || columnDifference == 1);
+        return super.validateMove(newPosition, BOARD) && validateKingMove(newPosition);
     }
 
     @Override
     public String toString() {
         return "King{" + getColour() + "}";
+    }
+
+    private boolean validateKingMove(Position newPosition) {
+        int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
+        int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
+
+        return (rowDifference == 1 || columnDifference == 1);
     }
 }
