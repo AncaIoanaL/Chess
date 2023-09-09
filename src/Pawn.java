@@ -11,7 +11,7 @@ public class Pawn extends Piece {
 
     @Override
     public void move(Position newPosition, Piece[][] BOARD) {
-        if (shouldPromotePawn(newPosition, BOARD)) {
+        if (shouldPromotePawn(newPosition)) {
             BOARD[newPosition.getRow()][newPosition.getColumn()] = promotePawn(newPosition);
             BOARD[getCurrentPosition().getRow()][getCurrentPosition().getColumn()] = null;
         } else {
