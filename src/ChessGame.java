@@ -21,8 +21,13 @@ public class ChessGame {
                 Piece pieceToMove = BOARD[currentPosition.getRow()][currentPosition.getColumn()];
 
                 if (pieceToMove != null && pieceToMove.validateMove(newPosition, BOARD)) {
-                    pieceToMove.move(newPosition, BOARD);
-                    playerNumber = playerNumber == 1 ? 2 : 1;
+                    if (validatePlayerColour(playerNumber, pieceToMove)) {
+                        pieceToMove.move(newPosition, BOARD);
+                        playerNumber = playerNumber == 1 ? 2 : 1;
+                    } else {
+                        System.out.println("Invalid piece chosen, you cannot move your opponents' pieces. Please move a piece of your chosen colour.");
+                    }
+
                 } else {
                     System.out.println();
                     System.out.println("Player " + playerNumber + " this is an invalid move, please try again.");
@@ -102,5 +107,9 @@ public class ChessGame {
             System.out.println(Arrays.toString(BOARD[i]));
         }
         System.out.println();
+    }
+
+    private static boolean validatePlayerColour(int playerNumber, Piece pieceToMove) {
+        return (!Colour.BLACK.equals(pieceToMove.getColour()) || playerNumber != 1) && (!Colour.WHITE.equals(pieceToMove.getColour()) || playerNumber != 2);
     }
 }
