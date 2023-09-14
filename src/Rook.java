@@ -5,11 +5,6 @@ public class Rook extends Piece {
     }
 
     @Override
-    public void attack() {
-
-    }
-
-    @Override
     public void move(Position newPosition, Piece[][] board) {
         super.move(newPosition, board);
     }
@@ -23,6 +18,11 @@ public class Rook extends Piece {
         if (!isValid) {
             throw new InvalidMoveException();
         }
+    }
+
+    @Override
+    public PieceType getPieceType() {
+        return PieceType.ROOK;
     }
 
     @Override

@@ -32,6 +32,5 @@ public abstract class Piece {
         }
     }
 
-    public abstract void attack();
-
+    public abstract PieceType getPieceType();
 }

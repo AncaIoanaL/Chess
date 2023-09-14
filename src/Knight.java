@@ -4,10 +4,7 @@ public class Knight extends Piece {
         super(colour, currentPosition);
     }
 
-    @Override
-    public void attack() {
 
-    }
 
     @Override
     public void move(Position newPosition, Piece[][] board) {
@@ -22,6 +19,11 @@ public class Knight extends Piece {
         if (!isValid) {
             throw new InvalidMoveException();
         }
+    }
+
+    @Override
+    public PieceType getPieceType() {
+        return PieceType.KNIGHT;
     }
 
     @Override

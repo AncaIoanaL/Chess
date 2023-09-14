@@ -4,10 +4,7 @@ public class Queen extends Piece {
         super(colour, currentPosition);
     }
 
-    @Override
-    public void attack() {
 
-    }
 
     @Override
     public void move(Position newPosition, Piece[][] board) {
@@ -29,6 +26,11 @@ public class Queen extends Piece {
             throw new InvalidMoveException();
         }
 
+    }
+
+    @Override
+    public PieceType getPieceType() {
+        return PieceType.QUEEN;
     }
 
     @Override
