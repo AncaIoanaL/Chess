@@ -4,6 +4,8 @@ import java.util.Scanner;
 public class ChessGame {
 
     private static final Piece[][] BOARD = new Piece[8][8];
+    private static King whiteKing;
+    private static King blackKing;
 
     public static void main(String[] args) {
         initialiseBoard();
@@ -20,17 +22,30 @@ public class ChessGame {
 
                 Piece pieceToMove = BOARD[currentPosition.getRow()][currentPosition.getColumn()];
 
-                if (pieceToMove != null && pieceToMove.validateMove(newPosition, BOARD)) {
-                    if (validatePlayerColour(playerNumber, pieceToMove)) {
-                        pieceToMove.move(newPosition, BOARD);
-                        playerNumber = playerNumber == 1 ? 2 : 1;
-                    } else {
-                        System.out.println("Invalid piece chosen, you cannot move your opponents' pieces. Please move a piece of your chosen colour.");
+                try {
+                    pieceToMove.validateMove(newPosition, BOARD);
+                    validatePlayerColour(playerNumber, pieceToMove);
+
+                    pieceToMove.move(newPosition, BOARD);
+
+                    if (playerNumber == 1) {
+                        whiteKing.validateCheck(BOARD);
                     }
 
-                } else {
+                    playerNumber = playerNumber == 1 ? 2 : 1;
+                } catch (NullPointerException e) {
+                    System.out.println();
+                    System.out.println("Player " + playerNumber + " there is no piece at the position provided, please try again.");
+                } catch (InvalidMoveException e) {
                     System.out.println();
                     System.out.println("Player " + playerNumber + " this is an invalid move, please try again.");
+                } catch (InvalidPieceToMoveColourException e) {
+                    System.out.println();
+                    System.out.println("Player " + playerNumber + " this is an invalid move as you cannot move your opponents' pieces, please try again.");
+                } catch (InvalidMoveDueToCheckException e) {
+                    pieceToMove.move(currentPosition, BOARD);
+                    System.out.println();
+                    System.out.println("Player " + playerNumber + " this is an invalid move as you are in check, please try again.");
                 }
 
                 printBoard();
@@ -75,7 +90,8 @@ public class ChessGame {
 
         BOARD[0][3] = new Queen(Colour.BLACK, new Position(0, 3));
 
-        BOARD[0][4] = new King(Colour.BLACK, new Position(0, 4));
+        blackKing = new King(Colour.BLACK, new Position(0, 4));
+        BOARD[0][4] = blackKing;
 
         for (int i = 0; i < 8; i++) {
             BOARD[1][i] = new Pawn(Colour.BLACK, new Position(1, i));
@@ -94,7 +110,8 @@ public class ChessGame {
 
         BOARD[7][3] = new Queen(Colour.WHITE, new Position(7, 3));
 
-        BOARD[7][4] = new King(Colour.WHITE, new Position(7, 4));
+        whiteKing = new King(Colour.WHITE, new Position(7, 4));
+        BOARD[7][4] = whiteKing;
 
         for (int i = 0; i < 8; i++) {
             BOARD[6][i] = new Pawn(Colour.WHITE, new Position(6, i));
@@ -109,7 +126,11 @@ public class ChessGame {
         System.out.println();
     }
 
-    private static boolean validatePlayerColour(int playerNumber, Piece pieceToMove) {
-        return (!Colour.BLACK.equals(pieceToMove.getColour()) || playerNumber != 1) && (!Colour.WHITE.equals(pieceToMove.getColour()) || playerNumber != 2);
+    private static void validatePlayerColour(int playerNumber, Piece pieceToMove) {
+        boolean isValid = (!Colour.BLACK.equals(pieceToMove.getColour()) || playerNumber != 1) && (!Colour.WHITE.equals(pieceToMove.getColour()) || playerNumber != 2);
+
+        if (!isValid) {
+            throw new InvalidPieceToMoveColourException();
+        }
     }
 }

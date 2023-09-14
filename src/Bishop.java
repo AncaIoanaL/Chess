@@ -10,13 +10,18 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] BOARD) {
-        super.move(newPosition, BOARD);
+    public void move(Position newPosition, Piece[][] board) {
+        super.move(newPosition, board);
     }
 
     @Override
-    public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        return super.validateMove(newPosition, BOARD) && validateBishopMove(newPosition) && validateBishopInBetweenPositions(newPosition, BOARD);
+    public void validateMove(Position newPosition, Piece[][] board) {
+        super.validateMove(newPosition, board);
+        boolean isValid = validateBishopMove(newPosition) && validateBishopInBetweenPositions(newPosition, board);
+
+        if (!isValid) {
+            throw new InvalidMoveException();
+        }
     }
 
     @Override
@@ -31,22 +36,22 @@ public class Bishop extends Piece {
         return rowDifference == columnDifference;
     }
 
-    private boolean validateBishopInBetweenPositions(Position newPosition, Piece[][] BOARD) {
+    private boolean validateBishopInBetweenPositions(Position newPosition, Piece[][] board) {
         for (int i = 1; i <= Math.abs(getCurrentPosition().getColumn() - newPosition.getColumn()); i++) {
             if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() - i] != null) {
+                if (board[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() - i] != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() + i] != null) {
+                if (board[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() + i] != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() + i] != null) {
+                if (board[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() + i] != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() - i] != null) {
+                if (board[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() - i] != null) {
                     return false;
                 }
             }

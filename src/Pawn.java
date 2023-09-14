@@ -20,13 +20,13 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] BOARD) {
+    public void move(Position newPosition, Piece[][] board) {
         if (shouldPromotePawn(newPosition)) {
-            BOARD[newPosition.getRow()][newPosition.getColumn()] = promotePawn(newPosition);
-            BOARD[getCurrentPosition().getRow()][getCurrentPosition().getColumn()] = null;
+            board[newPosition.getRow()][newPosition.getColumn()] = promotePawn(newPosition);
+            board[getCurrentPosition().getRow()][getCurrentPosition().getColumn()] = null;
         } else {
             previousPosition = getCurrentPosition();
-            super.move(newPosition, BOARD);
+            super.move(newPosition, board);
         }
     }
 
@@ -36,10 +36,14 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        return validatePawnEnPassant(newPosition, BOARD) ||
-                (validatePawnMove(newPosition, BOARD) && validatePawnInBetweenPositions(BOARD)) ||
-                validatePawnAttack(newPosition, BOARD);
+    public void validateMove(Position newPosition, Piece[][] board) {
+        boolean isValid = validatePawnEnPassant(newPosition, board) ||
+                (validatePawnMove(newPosition, board) && validatePawnInBetweenPositions(board)) ||
+                validatePawnAttack(newPosition, board);
+
+        if (!isValid) {
+            throw new InvalidMoveException();
+        }
     }
 
     @Override
@@ -47,28 +51,28 @@ public class Pawn extends Piece {
         return "Pawn{" + getColour() + "}";
     }
 
-    private boolean validatePawnEnPassant(Position newPosition, Piece[][] BOARD) {
+    private boolean validatePawnEnPassant(Position newPosition, Piece[][] board) {
         if (Colour.BLACK.equals(getColour())) {
-            if (!(BOARD[newPosition.getRow() - 1][newPosition.getColumn()] instanceof Pawn whitePawn) || !(BOARD[newPosition.getRow() - 2][newPosition.getColumn()] instanceof Pawn otherBlackPawn)) {
+            if (!(board[newPosition.getRow() - 1][newPosition.getColumn()] instanceof Pawn whitePawn) || !(board[newPosition.getRow() - 2][newPosition.getColumn()] instanceof Pawn otherBlackPawn)) {
                 return false;
             }
 
-            return BOARD[newPosition.getRow()][newPosition.getColumn()] == null &&
+            return board[newPosition.getRow()][newPosition.getColumn()] == null &&
                     Colour.WHITE.equals(whitePawn.getColour()) && whitePawn.getPreviousPosition().equals(whitePawn.getInitialPosition()) &&
                     Colour.BLACK.equals(otherBlackPawn.getColour());
         } else {
-            if (!(BOARD[newPosition.getRow() + 1][newPosition.getColumn()] instanceof Pawn blackPawn) || !(BOARD[newPosition.getRow() + 2][newPosition.getColumn()] instanceof Pawn otherWhitePawn)) {
+            if (!(board[newPosition.getRow() + 1][newPosition.getColumn()] instanceof Pawn blackPawn) || !(board[newPosition.getRow() + 2][newPosition.getColumn()] instanceof Pawn otherWhitePawn)) {
                 return false;
             }
 
-            return BOARD[newPosition.getRow()][newPosition.getColumn()] == null &&
+            return board[newPosition.getRow()][newPosition.getColumn()] == null &&
                     Colour.BLACK.equals(blackPawn.getColour()) && blackPawn.getPreviousPosition().equals(blackPawn.getInitialPosition()) &&
                     Colour.WHITE.equals(otherWhitePawn.getColour());
         }
     }
 
-    private boolean validatePawnMove(Position newPosition, Piece[][] BOARD) {
-        if (BOARD[newPosition.getRow()][newPosition.getColumn()] != null || getCurrentPosition().getColumn() != newPosition.getColumn()) {
+    private boolean validatePawnMove(Position newPosition, Piece[][] board) {
+        if (board[newPosition.getRow()][newPosition.getColumn()] != null || getCurrentPosition().getColumn() != newPosition.getColumn()) {
             return false;
         }
 
@@ -81,19 +85,19 @@ public class Pawn extends Piece {
         }
     }
 
-    private boolean validatePawnInBetweenPositions(Piece[][] BOARD) {
+    private boolean validatePawnInBetweenPositions(Piece[][] board) {
         if (getCurrentPosition().equals(initialPosition)) {
             if (Colour.BLACK.equals(getColour())) {
-                return BOARD[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn()] == null;
+                return board[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn()] == null;
             } else {
-                return BOARD[getCurrentPosition().getRow() - 1][getCurrentPosition().getColumn()] == null;
+                return board[getCurrentPosition().getRow() - 1][getCurrentPosition().getColumn()] == null;
             }
         }
 
         return true;
     }
 
-    private boolean validatePawnAttack(Position newPosition, Piece[][] BOARD) {
+    public boolean validatePawnAttack(Position newPosition, Piece[][] BOARD) {
         if (!getColour().equals(BOARD[newPosition.getRow()][newPosition.getColumn()].getColour())) {
             return false;
         }

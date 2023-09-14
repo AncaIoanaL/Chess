@@ -10,15 +10,19 @@ public class Rook extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] BOARD) {
-        super.move(newPosition, BOARD);
+    public void move(Position newPosition, Piece[][] board) {
+        super.move(newPosition, board);
     }
 
     @Override
-    public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        return super.validateMove(newPosition, BOARD) &&
-                validateRookInBetweenPositions(newPosition, BOARD) &&
+    public void validateMove(Position newPosition, Piece[][] board) {
+        super.validateMove(newPosition, board);
+        boolean isValid = validateRookInBetweenPositions(newPosition, board) &&
                 (newPosition.getRow() == getCurrentPosition().getRow() || newPosition.getColumn() == getCurrentPosition().getColumn());
+
+        if (!isValid) {
+            throw new InvalidMoveException();
+        }
     }
 
     @Override
@@ -26,13 +30,13 @@ public class Rook extends Piece {
         return "Rook{" + getColour() + "}";
     }
 
-    private boolean validateRookInBetweenPositions(Position newPosition, Piece[][] BOARD) {
+    private boolean validateRookInBetweenPositions(Position newPosition, Piece[][] board) {
         if (getCurrentPosition().getColumn() != newPosition.getColumn()) {
             int columnDifference = getCurrentPosition().getColumn() - newPosition.getColumn();
             int minColumn = Math.min(newPosition.getColumn(), getCurrentPosition().getColumn());
 
             for (int i = 0; i < Math.abs(columnDifference); i++) {
-                if (BOARD[newPosition.getRow()][minColumn + i + 1] != null) {
+                if (board[newPosition.getRow()][minColumn + i + 1] != null) {
                     return false;
                 }
             }
@@ -41,7 +45,7 @@ public class Rook extends Piece {
             int minRow = Math.min(newPosition.getRow(), getCurrentPosition().getRow());
 
             for (int i = 0; i < Math.abs(rowDifference); i++) {
-                if (BOARD[minRow + i + 1][newPosition.getColumn()] != null) {
+                if (board[minRow + i + 1][newPosition.getColumn()] != null) {
                     return false;
                 }
             }

@@ -10,13 +10,18 @@ public class Knight extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] BOARD) {
-        super.move(newPosition, BOARD);
+    public void move(Position newPosition, Piece[][] board) {
+        super.move(newPosition, board);
     }
 
     @Override
-    public boolean validateMove(Position newPosition, Piece[][] BOARD) {
-        return super.validateMove(newPosition, BOARD) && validateKnightMove(newPosition);
+    public void validateMove(Position newPosition, Piece[][] board) {
+        super.validateMove(newPosition, board);
+        boolean isValid = validateKnightMove(newPosition);
+
+        if (!isValid) {
+            throw new InvalidMoveException();
+        }
     }
 
     @Override

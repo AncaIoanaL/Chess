@@ -10,19 +10,24 @@ public class Queen extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] BOARD) {
-        super.move(newPosition, BOARD);
+    public void move(Position newPosition, Piece[][] board) {
+        super.move(newPosition, board);
     }
 
     @Override
-    public boolean validateMove(Position newPosition, Piece[][] BOARD) {
+    public void validateMove(Position newPosition, Piece[][] board) {
         int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
         int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
 
-        return super.validateMove(newPosition, BOARD) && (validateInBetweenPositionsRookLikeTrajectory(newPosition, BOARD) ||
-                validateInBetweenPositionsBishopLikeTrajectory(newPosition, BOARD)) &&
+        super.validateMove(newPosition, board);
+        boolean isValid = (validateInBetweenPositionsRookLikeTrajectory(newPosition, board) ||
+                validateInBetweenPositionsBishopLikeTrajectory(newPosition, board)) &&
                 ((rowDifference == columnDifference) || (newPosition.getRow() == getCurrentPosition().getRow() ||
                         newPosition.getColumn() == getCurrentPosition().getColumn()));
+
+        if (!isValid) {
+            throw new InvalidMoveException();
+        }
 
     }
 
@@ -31,13 +36,13 @@ public class Queen extends Piece {
         return "Queen{" + getColour() + "}";
     }
 
-    private boolean validateInBetweenPositionsRookLikeTrajectory(Position newPosition, Piece[][] BOARD) {
+    private boolean validateInBetweenPositionsRookLikeTrajectory(Position newPosition, Piece[][] board) {
         if (getCurrentPosition().getColumn() != newPosition.getColumn()) {
             int columnDifference = getCurrentPosition().getColumn() - newPosition.getColumn();
             int minColumn = Math.min(newPosition.getColumn(), getCurrentPosition().getColumn());
 
             for (int i = 0; i < Math.abs(columnDifference); i++) {
-                if (BOARD[newPosition.getRow()][minColumn + i + 1] != null) {
+                if (board[newPosition.getRow()][minColumn + i + 1] != null) {
                     return false;
                 }
             }
@@ -46,7 +51,7 @@ public class Queen extends Piece {
             int minRow = Math.min(newPosition.getRow(), getCurrentPosition().getRow());
 
             for (int i = 0; i < Math.abs(rowDifference); i++) {
-                if (BOARD[minRow + i + 1][newPosition.getColumn()] != null) {
+                if (board[minRow + i + 1][newPosition.getColumn()] != null) {
                     return false;
                 }
             }
@@ -55,22 +60,22 @@ public class Queen extends Piece {
         return true;
     }
 
-    private boolean validateInBetweenPositionsBishopLikeTrajectory(Position newPosition, Piece[][] BOARD) {
+    private boolean validateInBetweenPositionsBishopLikeTrajectory(Position newPosition, Piece[][] board) {
         for (int i = 1; i <= Math.abs(getCurrentPosition().getColumn() - newPosition.getColumn()); i++) {
             if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() - i] != null) {
+                if (board[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() - i] != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() + i] != null) {
+                if (board[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() + i] != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() + i] != null) {
+                if (board[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() + i] != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (BOARD[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() - i] != null) {
+                if (board[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() - i] != null) {
                     return false;
                 }
             }
