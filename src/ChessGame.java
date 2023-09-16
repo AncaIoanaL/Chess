@@ -23,13 +23,15 @@ public class ChessGame {
                 Piece pieceToMove = BOARD[currentPosition.getRow()][currentPosition.getColumn()];
 
                 try {
-                    pieceToMove.validateMove(newPosition, BOARD);
                     validatePlayerColour(playerNumber, pieceToMove);
+                    pieceToMove.validateMove(newPosition, BOARD);
 
                     pieceToMove.move(newPosition, BOARD);
 
                     if (playerNumber == 1) {
                         whiteKing.validateCheck(BOARD);
+                    } else {
+                        blackKing.validateCheck(BOARD);
                     }
 
                     playerNumber = playerNumber == 1 ? 2 : 1;

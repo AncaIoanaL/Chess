@@ -31,11 +31,6 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void attack() {
-
-    }
-
-    @Override
     public void validateMove(Position newPosition, Piece[][] board) {
         boolean isValid = validatePawnEnPassant(newPosition, board) ||
                 (validatePawnMove(newPosition, board) && validatePawnInBetweenPositions(board)) ||

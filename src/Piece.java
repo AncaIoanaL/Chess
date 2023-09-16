@@ -2,6 +2,7 @@ public abstract class Piece {
 
     private final Colour colour;
     private Position currentPosition;
+    int count = 0;
 
     public Piece(Colour colour, Position currentPosition) {
         this.colour = colour;
@@ -12,6 +13,10 @@ public abstract class Piece {
         return colour;
     }
 
+    public int getCount() {
+        return count;
+    }
+
     public Position getCurrentPosition() {
         return currentPosition;
     }
@@ -20,6 +25,7 @@ public abstract class Piece {
         board[newPosition.getRow()][newPosition.getColumn()] = board[currentPosition.getRow()][currentPosition.getColumn()];
         board[currentPosition.getRow()][currentPosition.getColumn()] = null;
         currentPosition = newPosition;
+        count++;
     }
 
     public void validateMove(Position newPosition, Piece[][] board) {
