@@ -16,6 +16,7 @@ public class King extends Piece {
     public void move(Position newPosition, Piece[][] board) {
         int difference = newPosition.getColumn() - getCurrentPosition().getColumn();
         isCastling = true;
+
         if (validateCastling(newPosition, board)) {
             if (Colour.WHITE.equals(getColour())) {
                 Piece whiteRook = board[7][7];
@@ -43,7 +44,7 @@ public class King extends Piece {
         super.validateMove(newPosition, board);
 
         if (validateCastling(newPosition, board)) {
-            //TODO set rocada true
+            isCastling = true;
         } else if (!validateKingMove(newPosition)) {
             throw new InvalidMoveException();
         }
