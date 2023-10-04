@@ -66,7 +66,7 @@ public class Board {
             System.out.println();
         }
         System.out.println("   ------------------------");
-        System.out.println("     A  B  C  D  E  F  G  H");
+        System.out.println("    A  B  C  D  E  F  G  H");
     }
 
     private void initialiseWhite() {
