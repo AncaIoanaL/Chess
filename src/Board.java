@@ -51,7 +51,7 @@ public class Board {
     public void printBoard() {
         System.out.println();
         for (int i = 0; i < 8; i++) {
-            System.out.print(i + " | ");
+            System.out.print((8 - i) + " | ");
             for (int j = 0; j < 8; j++) {
                 if (getPiece(i, j) == null) {
                     if ((i + j) % 2 == 0) {
