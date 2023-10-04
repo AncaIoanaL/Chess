@@ -7,12 +7,12 @@ public class Knight extends Piece {
 
 
     @Override
-    public void move(Position newPosition, Piece[][] board) {
+    public void move(Position newPosition, Board board) {
         super.move(newPosition, board);
     }
 
     @Override
-    public void validateMove(Position newPosition, Piece[][] board) {
+    public void validateMove(Position newPosition, Board board) {
         super.validateMove(newPosition, board);
         boolean isValid = validateKnightMove(newPosition);
 

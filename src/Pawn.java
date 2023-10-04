@@ -20,10 +20,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] board) {
+    public void move(Position newPosition, Board board) {
         if (shouldPromotePawn(newPosition)) {
-            board[newPosition.getRow()][newPosition.getColumn()] = promotePawn(newPosition);
-            board[getCurrentPosition().getRow()][getCurrentPosition().getColumn()] = null;
+            board.setPiece(newPosition, promotePawn(newPosition));
+            board.setPiece(getCurrentPosition(), null);
         } else {
             previousPosition = getCurrentPosition();
             super.move(newPosition, board);
@@ -31,7 +31,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void validateMove(Position newPosition, Piece[][] board) {
+    public void validateMove(Position newPosition, Board board) {
         boolean isValid = validatePawnEnPassant(newPosition, board) ||
                 (validatePawnMove(newPosition, board) && validatePawnInBetweenPositions(board)) ||
                 validatePawnAttack(newPosition, board);
@@ -51,28 +51,30 @@ public class Pawn extends Piece {
         return "Pawn{" + getColour() + "}";
     }
 
-    private boolean validatePawnEnPassant(Position newPosition, Piece[][] board) {
+    private boolean validatePawnEnPassant(Position newPosition, Board board) {
         if (Colour.BLACK.equals(getColour())) {
-            if (!(board[newPosition.getRow() - 1][newPosition.getColumn()] instanceof Pawn whitePawn) || !(board[newPosition.getRow() - 2][newPosition.getColumn()] instanceof Pawn otherBlackPawn)) {
+            if (!(board.getPiece(newPosition.getRow() - 1, newPosition.getColumn()) instanceof Pawn whitePawn) ||
+                    !(board.getPiece(newPosition.getRow() - 2, newPosition.getColumn()) instanceof Pawn otherBlackPawn)) {
                 return false;
             }
 
-            return board[newPosition.getRow()][newPosition.getColumn()] == null &&
+            return board.getPiece(newPosition) == null &&
                     Colour.WHITE.equals(whitePawn.getColour()) && whitePawn.getPreviousPosition().equals(whitePawn.getInitialPosition()) &&
                     Colour.BLACK.equals(otherBlackPawn.getColour());
         } else {
-            if (!(board[newPosition.getRow() + 1][newPosition.getColumn()] instanceof Pawn blackPawn) || !(board[newPosition.getRow() + 2][newPosition.getColumn()] instanceof Pawn otherWhitePawn)) {
+            if (!(board.getPiece(newPosition.getRow() + 1, newPosition.getColumn()) instanceof Pawn blackPawn) ||
+                    !(board.getPiece(newPosition.getRow() + 2, newPosition.getColumn()) instanceof Pawn otherWhitePawn)) {
                 return false;
             }
 
-            return board[newPosition.getRow()][newPosition.getColumn()] == null &&
+            return board.getPiece(newPosition) == null &&
                     Colour.BLACK.equals(blackPawn.getColour()) && blackPawn.getPreviousPosition().equals(blackPawn.getInitialPosition()) &&
                     Colour.WHITE.equals(otherWhitePawn.getColour());
         }
     }
 
-    private boolean validatePawnMove(Position newPosition, Piece[][] board) {
-        if (board[newPosition.getRow()][newPosition.getColumn()] != null || getCurrentPosition().getColumn() != newPosition.getColumn()) {
+    private boolean validatePawnMove(Position newPosition, Board board) {
+        if (board.getPiece(newPosition) != null || getCurrentPosition().getColumn() != newPosition.getColumn()) {
             return false;
         }
 
@@ -85,20 +87,20 @@ public class Pawn extends Piece {
         }
     }
 
-    private boolean validatePawnInBetweenPositions(Piece[][] board) {
+    private boolean validatePawnInBetweenPositions(Board board) {
         if (getCurrentPosition().equals(initialPosition)) {
             if (Colour.BLACK.equals(getColour())) {
-                return board[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn()] == null;
+                return board.getPiece(getCurrentPosition().getRow() + 1, getCurrentPosition().getColumn()) == null;
             } else {
-                return board[getCurrentPosition().getRow() - 1][getCurrentPosition().getColumn()] == null;
+                return board.getPiece(getCurrentPosition().getRow() - 1, getCurrentPosition().getColumn()) == null;
             }
         }
 
         return true;
     }
 
-    public boolean validatePawnAttack(Position newPosition, Piece[][] BOARD) {
-        if (!getColour().equals(BOARD[newPosition.getRow()][newPosition.getColumn()].getColour())) {
+    public boolean validatePawnAttack(Position newPosition, Board board) {
+        if (getColour().equals(board.getPiece(newPosition).getColour())) {
             return false;
         }
 

@@ -1,15 +1,11 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class ChessGame {
 
-    private static final Piece[][] BOARD = new Piece[8][8];
-    private static King whiteKing;
-    private static King blackKing;
-
     public static void main(String[] args) {
-        initialiseBoard();
-        printBoard();
+        Board board = new Board();
+        board.initialiseBoard();
+        board.printBoard();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -17,21 +13,25 @@ public class ChessGame {
 
         while (true) {
             try {
+                System.out.println(board.getPieces(Colour.WHITE));
+                System.out.println(board.getPieces(Colour.BLACK));
+                System.out.println();
+
                 Position currentPosition = askPlayerForCurrentPosition(playerNumber, scanner);
                 Position newPosition = askPlayerForNewPosition(playerNumber, scanner);
 
-                Piece pieceToMove = BOARD[currentPosition.getRow()][currentPosition.getColumn()];
+                Piece pieceToMove = board.getPiece(currentPosition);
 
                 try {
                     validatePlayerColour(playerNumber, pieceToMove);
-                    pieceToMove.validateMove(newPosition, BOARD);
+                    pieceToMove.validateMove(newPosition, board);
 
-                    pieceToMove.move(newPosition, BOARD);
+                    pieceToMove.move(newPosition, board);
 
                     if (playerNumber == 1) {
-                        whiteKing.validateCheck(BOARD);
+                        board.getWhiteKing().validateCheck(board);
                     } else {
-                        blackKing.validateCheck(BOARD);
+                        board.getBlackKing().validateCheck(board);
                     }
 
                     playerNumber = playerNumber == 1 ? 2 : 1;
@@ -45,12 +45,12 @@ public class ChessGame {
                     System.out.println();
                     System.out.println("Player " + playerNumber + " this is an invalid move as you cannot move your opponents' pieces, please try again.");
                 } catch (InvalidMoveDueToCheckException e) {
-                    pieceToMove.move(currentPosition, BOARD);
+                    pieceToMove.move(currentPosition, board);
                     System.out.println();
                     System.out.println("Player " + playerNumber + " this is an invalid move as you are in check, please try again.");
                 }
 
-                printBoard();
+                board.printBoard();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -75,61 +75,8 @@ public class ChessGame {
         return new Position(row, column);
     }
 
-    private static void initialiseBoard() {
-        initialiseWhite();
-        initialiseBlack();
-    }
-
-    private static void initialiseBlack() {
-        BOARD[0][0] = new Rook(Colour.BLACK, new Position(0, 0));
-        BOARD[0][7] = new Rook(Colour.BLACK, new Position(0, 7));
-
-        BOARD[0][1] = new Knight(Colour.BLACK, new Position(0, 1));
-        BOARD[0][6] = new Knight(Colour.BLACK, new Position(0, 6));
-
-        BOARD[0][2] = new Bishop(Colour.BLACK, new Position(0, 2));
-        BOARD[0][5] = new Bishop(Colour.BLACK, new Position(0, 5));
-
-        BOARD[0][3] = new Queen(Colour.BLACK, new Position(0, 3));
-
-        blackKing = new King(Colour.BLACK, new Position(0, 4));
-        BOARD[0][4] = blackKing;
-
-        for (int i = 0; i < 8; i++) {
-            BOARD[1][i] = new Pawn(Colour.BLACK, new Position(1, i));
-        }
-    }
-
-    private static void initialiseWhite() {
-        BOARD[7][0] = new Rook(Colour.WHITE, new Position(7, 0));
-        BOARD[7][7] = new Rook(Colour.WHITE, new Position(7, 7));
-
-        BOARD[7][1] = new Knight(Colour.WHITE, new Position(7, 1));
-        BOARD[7][6] = new Knight(Colour.WHITE, new Position(7, 6));
-
-        BOARD[7][2] = new Bishop(Colour.WHITE, new Position(7, 2));
-        BOARD[7][5] = new Bishop(Colour.WHITE, new Position(7, 5));
-
-        BOARD[7][3] = new Queen(Colour.WHITE, new Position(7, 3));
-
-        whiteKing = new King(Colour.WHITE, new Position(7, 4));
-        BOARD[7][4] = whiteKing;
-
-        for (int i = 0; i < 8; i++) {
-            BOARD[6][i] = new Pawn(Colour.WHITE, new Position(6, i));
-        }
-    }
-
-    private static void printBoard() {
-        System.out.println();
-        for (int i = 0; i < 8; i++) {
-            System.out.println(Arrays.toString(BOARD[i]));
-        }
-        System.out.println();
-    }
-
     private static void validatePlayerColour(int playerNumber, Piece pieceToMove) {
-        boolean isValid = (!Colour.BLACK.equals(pieceToMove.getColour()) || playerNumber != 1) && (!Colour.WHITE.equals(pieceToMove.getColour()) || playerNumber != 2);
+        boolean isValid = (!(Colour.BLACK.equals(pieceToMove.getColour()) && playerNumber == 1)) && (!(Colour.WHITE.equals(pieceToMove.getColour()) && playerNumber == 2));
 
         if (!isValid) {
             throw new InvalidPieceToMoveColourException();

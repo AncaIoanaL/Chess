@@ -13,26 +13,28 @@ public class King extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] board) {
+    public void move(Position newPosition, Board board) {
         int difference = newPosition.getColumn() - getCurrentPosition().getColumn();
         isCastling = true;
 
         if (validateCastling(newPosition, board)) {
             if (Colour.WHITE.equals(getColour())) {
-                Piece whiteRook = board[7][7];
+                Piece whiteRook = board.getPiece(new Position(7, 7));
                 if (difference > 0) {
                     whiteRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 1), board);
                 } else {
                     whiteRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + 1), board);
                 }
             } else {
-                Piece blackRook = board[0][7];;
+                Piece blackRook = board.getPiece(new Position(0, 7));
+
                 if (difference > 0) {
                     blackRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 1), board);
                 } else {
                     blackRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + 1), board);
                 }
             }
+
             isCastling = false;
         } else {
             super.move(newPosition, board);
@@ -40,7 +42,7 @@ public class King extends Piece {
     }
 
     @Override
-    public void validateMove(Position newPosition, Piece[][] board) {
+    public void validateMove(Position newPosition, Board board) {
         super.validateMove(newPosition, board);
 
         if (validateCastling(newPosition, board)) {
@@ -55,7 +57,7 @@ public class King extends Piece {
         return PieceType.KING;
     }
 
-    public void validateCheck(Piece[][] board) {
+    public void validateCheck(Board board) {
         validateBishopCheck(board);
         validateRookCheck(board);
         validateKnightCheck(board);
@@ -74,7 +76,7 @@ public class King extends Piece {
         return (rowDifference == 1 || columnDifference == 1);
     }
 
-    private void validateBishopCheck(Piece[][] board) {
+    private void validateBishopCheck(Board board) {
         int currentRow = getCurrentPosition().getRow();
         int currentColumn = getCurrentPosition().getColumn();
 
@@ -91,7 +93,7 @@ public class King extends Piece {
         }
     }
 
-    private void validateRookCheck(Piece[][] board) {
+    private void validateRookCheck(Board board) {
         int currentRow = getCurrentPosition().getRow();
         int currentColumn = getCurrentPosition().getColumn();
 
@@ -108,7 +110,7 @@ public class King extends Piece {
         }
     }
 
-    private void validatePawnCheck(Piece[][] board) {
+    private void validatePawnCheck(Board board) {
         int currentRow = getCurrentPosition().getRow();
         int currentColumn = getCurrentPosition().getColumn();
 
@@ -121,12 +123,12 @@ public class King extends Piece {
         }
     }
 
-    private boolean validateTrajectory(Piece[][] board, int currentRow, int currentColumn, boolean shouldValidateTrajectory, int incrementRow, int incrementColumn, PieceType pieceType) {
+    private boolean validateTrajectory(Board board, int currentRow, int currentColumn, boolean shouldValidateTrajectory, int incrementRow, int incrementColumn, PieceType pieceType) {
         if (shouldValidateTrajectory) {
             if (currentRow + incrementRow < 0 || currentRow + incrementRow >= 8 || currentColumn + incrementColumn < 0 || currentColumn + incrementColumn >= 8) {
                 return false;
             } else {
-                Piece pieceToValidate = board[getCurrentPosition().getRow() + incrementRow][getCurrentPosition().getColumn() + incrementColumn];
+                Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow() + incrementRow, getCurrentPosition().getColumn() + incrementColumn));
 
                 if (pieceToValidate != null) {
                     if (pieceToValidate.getColour() != getColour() && (pieceType.equals(pieceToValidate.getPieceType()) || PieceType.QUEEN.equals(pieceToValidate.getPieceType()))) {
@@ -141,7 +143,7 @@ public class King extends Piece {
         return shouldValidateTrajectory;
     }
 
-    private void validateKnightCheck(Piece[][] board) {
+    private void validateKnightCheck(Board board) {
         int currentRow = getCurrentPosition().getRow();
         int currentColumn = getCurrentPosition().getColumn();
 
@@ -155,9 +157,9 @@ public class King extends Piece {
         validateKnightPosition(board, currentRow, currentColumn, -2, 1);
     }
 
-    private void validateKnightPosition(Piece[][] board, int currentRow, int currentColumn, int incrementRow, int incrementColumn) {
+    private void validateKnightPosition(Board board, int currentRow, int currentColumn, int incrementRow, int incrementColumn) {
         if (currentRow + incrementRow >= 0 && currentRow + incrementRow < 8 && currentColumn + incrementColumn >= 0 && currentColumn + incrementColumn < 8) {
-            Piece pieceToValidate = board[getCurrentPosition().getRow() + incrementRow][getCurrentPosition().getColumn() + incrementColumn];
+            Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow() + incrementRow, getCurrentPosition().getColumn() + incrementColumn));
 
             if (pieceToValidate != null && pieceToValidate.getColour() != getColour() && PieceType.KNIGHT.equals(pieceToValidate.getPieceType())) {
                 throw new InvalidMoveDueToCheckException();
@@ -165,7 +167,7 @@ public class King extends Piece {
         }
     }
 
-    private boolean validateCastling(Position newPosition, Piece[][] board) {
+    private boolean validateCastling(Position newPosition, Board board) {
         int difference = newPosition.getColumn() - getCurrentPosition().getColumn();
         if (getCurrentPosition() != initialPosition && Math.abs(difference) != 2) {
             return false;
@@ -173,13 +175,13 @@ public class King extends Piece {
 
         if (difference > 0) {
             for (int i = 1; i <= 2; i++) {
-                Piece pieceToValidate = board[getCurrentPosition().getRow()][getCurrentPosition().getColumn() + i];
+                Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + i));
                 if (pieceToValidate != null && getCurrentPosition().getRow() != newPosition.getRow()) {
                     return false;
                 }
             }
 
-            Piece rook = board[getCurrentPosition().getRow()][getCurrentPosition().getColumn() + 3];
+            Piece rook = board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + 3));
             if (!PieceType.ROOK.equals(rook.getPieceType()) || rook.getCount() == 0) {
                 return false;
             }
@@ -190,13 +192,13 @@ public class King extends Piece {
             }
         } else {
             for (int i = 1; i <= 3; i++) {
-                Piece pieceToValidate = board[getCurrentPosition().getRow()][getCurrentPosition().getColumn() - i];
+                Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - i));
                 if (pieceToValidate != null && getCurrentPosition().getRow() != newPosition.getRow()) {
                     return false;
                 }
             }
 
-            Piece rook = board[getCurrentPosition().getRow()][getCurrentPosition().getColumn() - 4];
+            Piece rook =  board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 4));
             if (!PieceType.ROOK.equals(rook.getPieceType()) || rook.getCount() == 0) {
                 return false;
             }

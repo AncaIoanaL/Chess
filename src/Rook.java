@@ -5,12 +5,12 @@ public class Rook extends Piece {
     }
 
     @Override
-    public void move(Position newPosition, Piece[][] board) {
+    public void move(Position newPosition, Board board) {
         super.move(newPosition, board);
     }
 
     @Override
-    public void validateMove(Position newPosition, Piece[][] board) {
+    public void validateMove(Position newPosition, Board board) {
         super.validateMove(newPosition, board);
         boolean isValid = validateRookInBetweenPositions(newPosition, board) &&
                 (newPosition.getRow() == getCurrentPosition().getRow() || newPosition.getColumn() == getCurrentPosition().getColumn());
@@ -30,13 +30,13 @@ public class Rook extends Piece {
         return "Rook{" + getColour() + "}";
     }
 
-    private boolean validateRookInBetweenPositions(Position newPosition, Piece[][] board) {
+    private boolean validateRookInBetweenPositions(Position newPosition, Board board) {
         if (getCurrentPosition().getColumn() != newPosition.getColumn()) {
             int columnDifference = getCurrentPosition().getColumn() - newPosition.getColumn();
             int minColumn = Math.min(newPosition.getColumn(), getCurrentPosition().getColumn());
 
             for (int i = 0; i < Math.abs(columnDifference); i++) {
-                if (board[newPosition.getRow()][minColumn + i + 1] != null) {
+                if (board.getPiece(newPosition.getRow(), minColumn + i + 1) != null) {
                     return false;
                 }
             }
@@ -45,7 +45,7 @@ public class Rook extends Piece {
             int minRow = Math.min(newPosition.getRow(), getCurrentPosition().getRow());
 
             for (int i = 0; i < Math.abs(rowDifference); i++) {
-                if (board[minRow + i + 1][newPosition.getColumn()] != null) {
+                if (board.getPiece(minRow + i + 1, newPosition.getColumn()) != null) {
                     return false;
                 }
             }

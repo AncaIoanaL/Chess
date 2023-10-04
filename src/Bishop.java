@@ -7,12 +7,12 @@ public class Bishop extends Piece {
 
 
     @Override
-    public void move(Position newPosition, Piece[][] board) {
+    public void move(Position newPosition, Board board) {
         super.move(newPosition, board);
     }
 
     @Override
-    public void validateMove(Position newPosition, Piece[][] board) {
+    public void validateMove(Position newPosition, Board board) {
         super.validateMove(newPosition, board);
         boolean isValid = validateBishopMove(newPosition) && validateBishopInBetweenPositions(newPosition, board);
 
@@ -38,22 +38,22 @@ public class Bishop extends Piece {
         return rowDifference == columnDifference;
     }
 
-    private boolean validateBishopInBetweenPositions(Position newPosition, Piece[][] board) {
+    private boolean validateBishopInBetweenPositions(Position newPosition, Board board) {
         for (int i = 1; i <= Math.abs(getCurrentPosition().getColumn() - newPosition.getColumn()); i++) {
             if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (board[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() - i] != null) {
+                if (board.getPiece(new Position(getCurrentPosition().getRow() - i, getCurrentPosition().getColumn() - i)) != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (board[getCurrentPosition().getRow() - i][getCurrentPosition().getColumn() + i] != null) {
+                if (board.getPiece(new Position(getCurrentPosition().getRow() - i, getCurrentPosition().getColumn() + i)) != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (board[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() + i] != null) {
+                if (board.getPiece(new Position(getCurrentPosition().getRow() + i, getCurrentPosition().getColumn() + i)) != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (board[getCurrentPosition().getRow() + i][getCurrentPosition().getColumn() - i] != null) {
+                if (board.getPiece(new Position(getCurrentPosition().getRow() + i, getCurrentPosition().getColumn() - i)) != null) {
                     return false;
                 }
             }
