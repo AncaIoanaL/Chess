@@ -19,14 +19,14 @@ public class King extends Piece {
 
         if (validateCastling(newPosition, board)) {
             if (Colour.WHITE.equals(getColour())) {
-                Piece whiteRook = board.getPiece(new Position(7, 7));
+                Piece whiteRook = board.getPiece(7, 7);
                 if (difference > 0) {
                     whiteRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 1), board);
                 } else {
                     whiteRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + 1), board);
                 }
             } else {
-                Piece blackRook = board.getPiece(new Position(0, 7));
+                Piece blackRook = board.getPiece(0, 7);
 
                 if (difference > 0) {
                     blackRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 1), board);
@@ -66,7 +66,11 @@ public class King extends Piece {
 
     @Override
     public String toString() {
-        return "King{" + getColour() + "}";
+        if (Colour.BLACK.equals(getColour())) {
+            return "♚";
+        } else {
+            return "♔";
+        }
     }
 
     private boolean validateKingMove(Position newPosition) {
@@ -128,7 +132,7 @@ public class King extends Piece {
             if (currentRow + incrementRow < 0 || currentRow + incrementRow >= 8 || currentColumn + incrementColumn < 0 || currentColumn + incrementColumn >= 8) {
                 return false;
             } else {
-                Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow() + incrementRow, getCurrentPosition().getColumn() + incrementColumn));
+                Piece pieceToValidate = board.getPiece(getCurrentPosition(), incrementRow, incrementColumn);
 
                 if (pieceToValidate != null) {
                     if (pieceToValidate.getColour() != getColour() && (pieceType.equals(pieceToValidate.getPieceType()) || PieceType.QUEEN.equals(pieceToValidate.getPieceType()))) {
@@ -159,7 +163,7 @@ public class King extends Piece {
 
     private void validateKnightPosition(Board board, int currentRow, int currentColumn, int incrementRow, int incrementColumn) {
         if (currentRow + incrementRow >= 0 && currentRow + incrementRow < 8 && currentColumn + incrementColumn >= 0 && currentColumn + incrementColumn < 8) {
-            Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow() + incrementRow, getCurrentPosition().getColumn() + incrementColumn));
+            Piece pieceToValidate = board.getPiece(getCurrentPosition(), incrementRow, incrementColumn);
 
             if (pieceToValidate != null && pieceToValidate.getColour() != getColour() && PieceType.KNIGHT.equals(pieceToValidate.getPieceType())) {
                 throw new InvalidMoveDueToCheckException();
@@ -175,13 +179,13 @@ public class King extends Piece {
 
         if (difference > 0) {
             for (int i = 1; i <= 2; i++) {
-                Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + i));
+                Piece pieceToValidate = board.getPiece(getCurrentPosition(), 0, i);
                 if (pieceToValidate != null && getCurrentPosition().getRow() != newPosition.getRow()) {
                     return false;
                 }
             }
 
-            Piece rook = board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + 3));
+            Piece rook = board.getPiece(getCurrentPosition(), 0, 3);
             if (!PieceType.ROOK.equals(rook.getPieceType()) || rook.getCount() == 0) {
                 return false;
             }
@@ -192,13 +196,13 @@ public class King extends Piece {
             }
         } else {
             for (int i = 1; i <= 3; i++) {
-                Piece pieceToValidate = board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - i));
+                Piece pieceToValidate = board.getPiece(getCurrentPosition(), 0, -i);
                 if (pieceToValidate != null && getCurrentPosition().getRow() != newPosition.getRow()) {
                     return false;
                 }
             }
 
-            Piece rook =  board.getPiece(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 4));
+            Piece rook =  board.getPiece(getCurrentPosition(), 0, -4);
             if (!PieceType.ROOK.equals(rook.getPieceType()) || rook.getCount() == 0) {
                 return false;
             }

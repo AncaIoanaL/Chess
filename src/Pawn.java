@@ -48,13 +48,16 @@ public class Pawn extends Piece {
 
     @Override
     public String toString() {
-        return "Pawn{" + getColour() + "}";
+        if (Colour.BLACK.equals(getColour())) {
+            return "♟";
+        } else {
+            return "♙";
+        }
     }
 
     private boolean validatePawnEnPassant(Position newPosition, Board board) {
         if (Colour.BLACK.equals(getColour())) {
-            if (!(board.getPiece(newPosition.getRow() - 1, newPosition.getColumn()) instanceof Pawn whitePawn) ||
-                    !(board.getPiece(newPosition.getRow() - 2, newPosition.getColumn()) instanceof Pawn otherBlackPawn)) {
+            if (!(board.getPiece(newPosition, -1, 0) instanceof Pawn whitePawn) || !(board.getPiece(newPosition, -2, 0) instanceof Pawn otherBlackPawn)) {
                 return false;
             }
 
@@ -62,8 +65,8 @@ public class Pawn extends Piece {
                     Colour.WHITE.equals(whitePawn.getColour()) && whitePawn.getPreviousPosition().equals(whitePawn.getInitialPosition()) &&
                     Colour.BLACK.equals(otherBlackPawn.getColour());
         } else {
-            if (!(board.getPiece(newPosition.getRow() + 1, newPosition.getColumn()) instanceof Pawn blackPawn) ||
-                    !(board.getPiece(newPosition.getRow() + 2, newPosition.getColumn()) instanceof Pawn otherWhitePawn)) {
+            if (!(board.getPiece(newPosition, 1, 0) instanceof Pawn blackPawn) ||
+                    !(board.getPiece(newPosition, 2, 0) instanceof Pawn otherWhitePawn)) {
                 return false;
             }
 
@@ -90,9 +93,9 @@ public class Pawn extends Piece {
     private boolean validatePawnInBetweenPositions(Board board) {
         if (getCurrentPosition().equals(initialPosition)) {
             if (Colour.BLACK.equals(getColour())) {
-                return board.getPiece(getCurrentPosition().getRow() + 1, getCurrentPosition().getColumn()) == null;
+                return board.getPiece(getCurrentPosition(), 1, 0) == null;
             } else {
-                return board.getPiece(getCurrentPosition().getRow() - 1, getCurrentPosition().getColumn()) == null;
+                return board.getPiece(getCurrentPosition(), -1, 0) == null;
             }
         }
 

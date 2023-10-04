@@ -27,7 +27,11 @@ public class Rook extends Piece {
 
     @Override
     public String toString() {
-        return "Rook{" + getColour() + "}";
+        if (Colour.BLACK.equals(getColour())) {
+            return "♜";
+        } else {
+            return "♖";
+        }
     }
 
     private boolean validateRookInBetweenPositions(Position newPosition, Board board) {

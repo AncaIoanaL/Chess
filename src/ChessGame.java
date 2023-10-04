@@ -13,10 +13,6 @@ public class ChessGame {
 
         while (true) {
             try {
-                System.out.println(board.getPieces(Colour.WHITE));
-                System.out.println(board.getPieces(Colour.BLACK));
-                System.out.println();
-
                 Position currentPosition = askPlayerForCurrentPosition(playerNumber, scanner);
                 Position newPosition = askPlayerForNewPosition(playerNumber, scanner);
 
@@ -36,18 +32,14 @@ public class ChessGame {
 
                     playerNumber = playerNumber == 1 ? 2 : 1;
                 } catch (NullPointerException e) {
-                    System.out.println();
-                    System.out.println("Player " + playerNumber + " there is no piece at the position provided, please try again.");
+                    System.out.println("\nPlayer " + playerNumber + " there is no piece at the position provided, please try again.");
                 } catch (InvalidMoveException e) {
-                    System.out.println();
-                    System.out.println("Player " + playerNumber + " this is an invalid move, please try again.");
+                    System.out.println("\nPlayer " + playerNumber + " this is an invalid move, please try again.");
                 } catch (InvalidPieceToMoveColourException e) {
-                    System.out.println();
-                    System.out.println("Player " + playerNumber + " this is an invalid move as you cannot move your opponents' pieces, please try again.");
+                    System.out.println("\nPlayer " + playerNumber + " this is an invalid move as you cannot move your opponents' pieces, please try again.");
                 } catch (InvalidMoveDueToCheckException e) {
                     pieceToMove.move(currentPosition, board);
-                    System.out.println();
-                    System.out.println("Player " + playerNumber + " this is an invalid move as you are in check, please try again.");
+                    System.out.println("\nPlayer " + playerNumber + " this is an invalid move as you are in check, please try again.");
                 }
 
                 board.printBoard();
@@ -58,7 +50,7 @@ public class ChessGame {
     }
 
     private static Position askPlayerForCurrentPosition(int playerNumber, Scanner scanner) {
-        System.out.print("Player " + playerNumber + " enter current position: ");
+        System.out.print("\nPlayer " + playerNumber + " enter current position: ");
         String[] coordinates = scanner.nextLine().split(" ");
 
         int row = 8 - Integer.parseInt(coordinates[0]);

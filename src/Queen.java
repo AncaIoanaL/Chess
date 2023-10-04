@@ -5,7 +5,6 @@ public class Queen extends Piece {
     }
 
 
-
     @Override
     public void move(Position newPosition, Board board) {
         super.move(newPosition, board);
@@ -35,7 +34,11 @@ public class Queen extends Piece {
 
     @Override
     public String toString() {
-        return "Queen{" + getColour() + "}";
+        if (Colour.BLACK.equals(getColour())) {
+            return "♛";
+        } else {
+            return "♕";
+        }
     }
 
     private boolean validateInBetweenPositionsRookLikeTrajectory(Position newPosition, Board board) {
@@ -65,19 +68,19 @@ public class Queen extends Piece {
     private boolean validateInBetweenPositionsBishopLikeTrajectory(Position newPosition, Board board) {
         for (int i = 1; i <= Math.abs(getCurrentPosition().getColumn() - newPosition.getColumn()); i++) {
             if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition().getRow() - i, getCurrentPosition().getColumn() - i) != null) {
+                if (board.getPiece(getCurrentPosition(), -i, -i) != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition().getRow() - i, getCurrentPosition().getColumn() + i) != null) {
+                if (board.getPiece(getCurrentPosition(), -i, i) != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition().getRow() + i, getCurrentPosition().getColumn() + i) != null) {
+                if (board.getPiece(getCurrentPosition(), i, i) != null) {
                     return false;
                 }
             } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition().getRow() + i, getCurrentPosition().getColumn() - i) != null) {
+                if (board.getPiece(getCurrentPosition(), i, -i) != null) {
                     return false;
                 }
             }

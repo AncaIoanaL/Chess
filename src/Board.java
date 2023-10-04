@@ -1,8 +1,11 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Board {
 
-    private final Piece[][] positions = new Piece[8][0];
+    private final Piece[][] positions = new Piece[8][8];
     private King whiteKing;
     private King blackKing;
     private final Map<Colour, List<Piece>> pieces = new HashMap<>();
@@ -21,6 +24,10 @@ public class Board {
 
     public Piece getPiece(int row, int column) {
         return positions[row][column];
+    }
+
+    public Piece getPiece(Position position, int rowOffset, int columnOffset) {
+        return positions[position.getRow() + rowOffset][position.getColumn() + columnOffset];
     }
 
     public void setPiece(Position position, Piece piece) {
@@ -44,9 +51,22 @@ public class Board {
     public void printBoard() {
         System.out.println();
         for (int i = 0; i < 8; i++) {
-            System.out.println(Arrays.toString(positions[i]));
+            System.out.print(i + " | ");
+            for (int j = 0; j < 8; j++) {
+                if (getPiece(i, j) == null) {
+                    if ((i + j) % 2 == 0) {
+                        System.out.print("□ ");
+                    } else {
+                        System.out.print("■ ");
+                    }
+                } else {
+                    System.out.print(getPiece(i, j) + " ");
+                }
+            }
+            System.out.println();
         }
-        System.out.println();
+        System.out.println("   ------------------------");
+        System.out.println("     A  B  C  D  E  F  G  H");
     }
 
     private void initialiseWhite() {
@@ -67,6 +87,8 @@ public class Board {
         for (int i = 0; i < 8; i++) {
             positions[6][i] = new Pawn(Colour.WHITE, new Position(6, i));
         }
+
+        pieces.put(Colour.WHITE, new ArrayList<>());
 
         for (int i = 0; i < 8; i++) {
             pieces.get(Colour.WHITE).add(i, positions[6][i]);
@@ -94,6 +116,8 @@ public class Board {
         for (int i = 0; i < 8; i++) {
             positions[1][i] = new Pawn(Colour.BLACK, new Position(1, i));
         }
+
+        pieces.put(Colour.BLACK, new ArrayList<>());
 
         for (int i = 0; i < 8; i++) {
             pieces.get(Colour.BLACK).add(i, positions[1][i]);

@@ -28,7 +28,11 @@ public class Knight extends Piece {
 
     @Override
     public String toString() {
-        return "Knight{" + getColour() + "}";
+        if (Colour.BLACK.equals(getColour())) {
+            return "♞";
+        } else {
+            return "♘";
+        }
     }
 
     private boolean validateKnightMove(Position newPosition) {
