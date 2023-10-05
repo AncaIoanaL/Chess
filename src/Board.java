@@ -43,9 +43,11 @@ public class Board {
         return pieces.get(colour);
     }
 
-    public void initialiseBoard() {
+    public Map<Colour, List<Piece>> initialiseBoard() {
         initialiseWhite();
         initialiseBlack();
+
+        return pieces;
     }
 
     public void printBoard() {
