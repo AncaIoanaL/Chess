@@ -38,7 +38,6 @@ public class ChessGame {
                         board.getBlackKing().validateCheck(board);
                         currentPlayer = PLAYER_1;
                     }
-
                 } catch (NullPointerException e) {
                     System.out.println("\n" + currentPlayer + " there is no piece at the position provided, please try again.");
                 } catch (InvalidMoveException e) {
