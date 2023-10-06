@@ -39,10 +39,6 @@ public class Board {
         positions[currentPosition.getRow()][currentPosition.getColumn()] = null;
     }
 
-    public List<Piece> getPieces(Colour colour) {
-        return pieces.get(colour);
-    }
-
     public Map<Colour, List<Piece>> initialiseBoard() {
         initialiseWhite();
         initialiseBlack();

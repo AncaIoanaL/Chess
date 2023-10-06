@@ -12,7 +12,7 @@ public class Bishop extends Piece {
     @Override
     public void validateMove(Position newPosition, Board board) {
         super.validateMove(newPosition, board);
-        boolean isValid = validateBishopMove(newPosition) && validateBishopInBetweenPositions(newPosition, board);
+        boolean isValid = validateBishopMove(newPosition) && validateInBetweenPosition(newPosition, board);
 
         if (!isValid) {
             throw new InvalidMoveException();
@@ -24,15 +24,6 @@ public class Bishop extends Piece {
         return PieceType.KING;
     }
 
-    @Override
-    public String toString() {
-        if (Colour.BLACK.equals(getColour())) {
-            return "♝";
-        } else {
-            return "♗";
-        }
-    }
-
     private boolean validateBishopMove(Position newPosition) {
         int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
         int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
@@ -40,27 +31,12 @@ public class Bishop extends Piece {
         return rowDifference == columnDifference;
     }
 
-    private boolean validateBishopInBetweenPositions(Position newPosition, Board board) {
-        for (int i = 1; i <= Math.abs(getCurrentPosition().getColumn() - newPosition.getColumn()); i++) {
-            if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition(), -i, -i) != null) {
-                    return false;
-                }
-            } else if (getCurrentPosition().getRow() > newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition(), -i, i) != null) {
-                    return false;
-                }
-            } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() < newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition(), i, i) != null) {
-                    return false;
-                }
-            } else if (getCurrentPosition().getRow() < newPosition.getRow() && getCurrentPosition().getColumn() > newPosition.getColumn()) {
-                if (board.getPiece(getCurrentPosition(), i, -i) != null) {
-                    return false;
-                }
-            }
+    @Override
+    public String toString() {
+        if (Colour.BLACK.equals(getColour())) {
+            return "♝";
+        } else {
+            return "♗";
         }
-
-        return true;
     }
 }

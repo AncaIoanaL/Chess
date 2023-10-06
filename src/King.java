@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class King extends Piece {
 
     private final Position initialPosition;
@@ -6,10 +8,6 @@ public class King extends Piece {
     public King(Colour colour, Position currentPosition) {
         super(colour, currentPosition);
         initialPosition = currentPosition;
-    }
-
-    public Position getInitialPosition() {
-        return initialPosition;
     }
 
     @Override
@@ -64,15 +62,6 @@ public class King extends Piece {
         validatePawnCheck(board);
     }
 
-    @Override
-    public String toString() {
-        if (Colour.BLACK.equals(getColour())) {
-            return "♚";
-        } else {
-            return "♔";
-        }
-    }
-
     private boolean validateKingMove(Position newPosition) {
         int rowDifference = Math.abs(newPosition.getRow() - getCurrentPosition().getRow());
         int columnDifference = Math.abs(newPosition.getColumn() - getCurrentPosition().getColumn());
@@ -81,89 +70,76 @@ public class King extends Piece {
     }
 
     private void validateBishopCheck(Board board) {
-        int currentRow = getCurrentPosition().getRow();
-        int currentColumn = getCurrentPosition().getColumn();
+        int row = getCurrentPosition().getRow();
+        int column = getCurrentPosition().getColumn();
 
-        boolean diagonal1 = true;
-        boolean diagonal2 = true;
-        boolean diagonal3 = true;
-        boolean diagonal4 = true;
+        // left up
+        validateInBetweenPositions(new Position(row - Math.min(row, column), column - Math.min(row, column)), board, PieceType.BISHOP);
 
-        for (int i = 1; i < 8; i++) {
-            diagonal1 = validateTrajectory(board, currentRow, currentColumn, diagonal1, i, i, PieceType.BISHOP);
-            diagonal2 = validateTrajectory(board, currentRow, currentColumn, diagonal2, -i, i, PieceType.BISHOP);
-            diagonal3 = validateTrajectory(board, currentRow, currentColumn, diagonal3, i, -i, PieceType.BISHOP);
-            diagonal4 = validateTrajectory(board, currentRow, currentColumn, diagonal4, -i, -i, PieceType.BISHOP);
-        }
+        //right up
+        validateInBetweenPositions(new Position(row - Math.min(row, 7 -  column), column + Math.min(row, 7 - column)), board, PieceType.BISHOP);
+
+        // left down
+        validateInBetweenPositions(new Position(row + Math.min(7 - row, column), column - Math.min(7 - row, column)), board, PieceType.BISHOP);
+
+        //right down
+        validateInBetweenPositions(new Position(row + Math.min(7 - row, 7 - column), column + Math.min(7 - row, 7 - column)), board, PieceType.BISHOP);
     }
 
     private void validateRookCheck(Board board) {
-        int currentRow = getCurrentPosition().getRow();
-        int currentColumn = getCurrentPosition().getColumn();
-
-        boolean line1 = true;
-        boolean line2 = true;
-        boolean line3 = true;
-        boolean line4 = true;
-
-        for (int i = 1; i < 8; i++) {
-            line1 = validateTrajectory(board, currentRow, currentColumn, line1, 0, i, PieceType.ROOK);
-            line2 = validateTrajectory(board, currentRow, currentColumn, line2, i, 0, PieceType.ROOK);
-            line3 = validateTrajectory(board, currentRow, currentColumn, line3, 0, -i, PieceType.ROOK);
-            line4 = validateTrajectory(board, currentRow, currentColumn, line4, -i, 0, PieceType.ROOK);
-        }
+        validateInBetweenPositions(new Position(getCurrentPosition().getRow(), 0), board, PieceType.ROOK);
+        validateInBetweenPositions(new Position(getCurrentPosition().getRow(), 8), board, PieceType.ROOK);
+        validateInBetweenPositions(new Position(0, getCurrentPosition().getColumn()), board, PieceType.ROOK);
+        validateInBetweenPositions(new Position(8, getCurrentPosition().getColumn()), board, PieceType.ROOK);
     }
 
     private void validatePawnCheck(Board board) {
-        int currentRow = getCurrentPosition().getRow();
-        int currentColumn = getCurrentPosition().getColumn();
+        int row = getCurrentPosition().getRow();
+        int column = getCurrentPosition().getColumn();
 
-        if (Colour.BLACK.equals(getColour())) {
-            validateTrajectory(board, currentRow, currentColumn, true, 1, 1, PieceType.PAWN);
-            validateTrajectory(board, currentRow, currentColumn, true, 1, -1, PieceType.PAWN);
+        if (Colour.WHITE.equals(getColour())) {
+            validateInBetweenPositions(new Position(row - 1, column + 1), board, PieceType.PAWN);
+            validateInBetweenPositions(new Position(row - 1, column - 1), board, PieceType.PAWN);
         } else {
-            validateTrajectory(board, currentRow, currentColumn, true, -1, 1, PieceType.PAWN);
-            validateTrajectory(board, currentRow, currentColumn, true, -1, -1, PieceType.PAWN);
+            validateInBetweenPositions(new Position(row + 1, column + 1), board, PieceType.PAWN);
+            validateInBetweenPositions(new Position(row + 1, column - 1), board, PieceType.PAWN);
         }
     }
 
-    private boolean validateTrajectory(Board board, int currentRow, int currentColumn, boolean shouldValidateTrajectory, int incrementRow, int incrementColumn, PieceType pieceType) {
-        if (shouldValidateTrajectory) {
-            if (currentRow + incrementRow < 0 || currentRow + incrementRow >= 8 || currentColumn + incrementColumn < 0 || currentColumn + incrementColumn >= 8) {
-                return false;
-            } else {
-                Piece pieceToValidate = board.getPiece(getCurrentPosition(), incrementRow, incrementColumn);
+    private void validateInBetweenPositions(Position newPosition, Board board, PieceType pieceType) {
+        List<Position> inBetweenPositions = getCurrentPosition().getInBetweenPositions(newPosition);
+        inBetweenPositions.add(newPosition);
+
+        for (Position inBetweenPosition : inBetweenPositions) {
+            if (inBetweenPosition.validPosition()) {
+                Piece pieceToValidate = board.getPiece(inBetweenPosition);
 
                 if (pieceToValidate != null) {
                     if (pieceToValidate.getColour() != getColour() && (pieceType.equals(pieceToValidate.getPieceType()) || PieceType.QUEEN.equals(pieceToValidate.getPieceType()))) {
                         throw new InvalidMoveDueToCheckException();
-                    } else {
-                        return false;
                     }
                 }
             }
         }
-
-        return shouldValidateTrajectory;
     }
 
     private void validateKnightCheck(Board board) {
-        int currentRow = getCurrentPosition().getRow();
-        int currentColumn = getCurrentPosition().getColumn();
+        int row = getCurrentPosition().getRow();
+        int column = getCurrentPosition().getColumn();
 
-        validateKnightPosition(board, currentRow, currentColumn, 1, 2);
-        validateKnightPosition(board, currentRow, currentColumn, 1, -2);
-        validateKnightPosition(board, currentRow, currentColumn, -1, 2);
-        validateKnightPosition(board, currentRow, currentColumn, -1, -2);
-        validateKnightPosition(board, currentRow, currentColumn, 2, 1);
-        validateKnightPosition(board, currentRow, currentColumn, 2, -1);
-        validateKnightPosition(board, currentRow, currentColumn, -2, -1);
-        validateKnightPosition(board, currentRow, currentColumn, -2, 1);
+        validateKnightPosition(board, new Position(row + 1, column + 2));
+        validateKnightPosition(board, new Position(row + 1, column - 2));
+        validateKnightPosition(board, new Position(row - 1, column + 2));
+        validateKnightPosition(board, new Position(row - 1, column - 2));
+        validateKnightPosition(board, new Position(row + 2, column + 1));
+        validateKnightPosition(board, new Position(row + 2, column - 1));
+        validateKnightPosition(board, new Position(row - 2, column - 1));
+        validateKnightPosition(board, new Position(row - 2, column + 1));
     }
 
-    private void validateKnightPosition(Board board, int currentRow, int currentColumn, int incrementRow, int incrementColumn) {
-        if (currentRow + incrementRow >= 0 && currentRow + incrementRow < 8 && currentColumn + incrementColumn >= 0 && currentColumn + incrementColumn < 8) {
-            Piece pieceToValidate = board.getPiece(getCurrentPosition(), incrementRow, incrementColumn);
+    private void validateKnightPosition(Board board, Position position) {
+        if (position.validPosition()) {
+            Piece pieceToValidate = board.getPiece(position);
 
             if (pieceToValidate != null && pieceToValidate.getColour() != getColour() && PieceType.KNIGHT.equals(pieceToValidate.getPieceType())) {
                 throw new InvalidMoveDueToCheckException();
@@ -202,7 +178,7 @@ public class King extends Piece {
                 }
             }
 
-            Piece rook =  board.getPiece(getCurrentPosition(), 0, -4);
+            Piece rook = board.getPiece(getCurrentPosition(), 0, -4);
             if (!PieceType.ROOK.equals(rook.getPieceType()) || rook.getCount() == 0) {
                 return false;
             }
@@ -213,41 +189,15 @@ public class King extends Piece {
             }
         }
 
-//        for (int i = 1; i < 8; i++) {
-//            if (getCurrentPosition().getRow() - i < 0 || getCurrentPosition().getRow() + i >= 8 || getCurrentPosition().getColumn() - i < 0 || getCurrentPosition().getColumn() + i >= 8) {
-//                return false;
-//            } else {
-//                if (difference < 0) {
-//                    Piece pieceToValidate = board[getCurrentPosition().getRow()][getCurrentPosition().getColumn() + i];
-//                    if (pieceToValidate != null) {
-//                        return false;
-//                    }
-//                } else {
-//                    Piece pieceToValidate = board[getCurrentPosition().getRow()][getCurrentPosition().getColumn() - i];
-//                    if (pieceToValidate != null) {
-//                        return false;
-//                    }
-//                }
-//
-//            }
-//        }
-
         return true;
     }
 
-//    private boolean validateCheckMate(Piece[][] board, int currentRow, int currentColumn, int incrementRow, int incrementColumn) {
-//        int count = 0;
-//
-//
-//        board[getCurrentPosition().getRow()][getCurrentPosition().getColumn() + 1];
-//        board[getCurrentPosition().getRow()][getCurrentPosition().getColumn()];
-//        board[getCurrentPosition().getRow() + -1][getCurrentPosition().getColumn()];
-//        board[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn()];
-//        board[getCurrentPosition().getRow() + -1][getCurrentPosition().getColumn() + -1];
-//        board[getCurrentPosition().getRow() + -1][getCurrentPosition().getColumn() + 1];
-//        board[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn() + 1];
-//        board[getCurrentPosition().getRow() + 1][getCurrentPosition().getColumn() + -1];
-//
-//        validateCheck(board);
-//    }
+    @Override
+    public String toString() {
+        if (Colour.BLACK.equals(getColour())) {
+            return "♚";
+        } else {
+            return "♔";
+        }
+    }
 }

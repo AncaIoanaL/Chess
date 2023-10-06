@@ -1,3 +1,5 @@
+import java.util.List;
+
 public abstract class Piece {
 
     private final Colour colour;
@@ -35,6 +37,18 @@ public abstract class Piece {
         if (!isValid) {
             throw new InvalidMoveException();
         }
+    }
+
+    public boolean validateInBetweenPosition(Position newPosition, Board board) {
+        List<Position> inBetweenPositions = getCurrentPosition().getInBetweenPositions(newPosition);
+
+        for (Position inBetweenPosition : inBetweenPositions) {
+            if (board.getPiece(inBetweenPosition) != null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public abstract PieceType getPieceType();

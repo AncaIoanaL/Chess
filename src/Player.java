@@ -12,20 +12,12 @@ public class Player {
         this.number = number;
     }
 
-    public List<Piece> getPieces() {
-        return pieces;
-    }
-
     public void setPieces(List<Piece> pieces) {
         this.pieces = pieces;
     }
 
     public Colour getColour() {
         return colour;
-    }
-
-    public int getNumber() {
-        return number;
     }
 
     public void validatePieceColour(Piece pieceToMove) {

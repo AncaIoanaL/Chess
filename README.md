@@ -15,7 +15,7 @@ The program catches and handles exceptions accordingly, prompting the players wi
 
 Although the program is functional, I am still yet to add the below features to it:
 - finish game once a player is in check mate (add validation to identify check mate)
-- finalise the castling move
+- finalise the castling move (add move method for king and rook)
 - learn frontend to add a UI to the game 
 
 In order for the board to be properly aligned, please ensure you are using a monospaced font that supports unicode characters, such as NSimSun, MS Gothic and SimSun.

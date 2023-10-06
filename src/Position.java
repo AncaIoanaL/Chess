@@ -1,7 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Position {
 
-    private int row;
-    private int column;
+    private final int row;
+    private final int column;
 
     public Position(int row, int column) {
         this.row = row;
@@ -16,12 +19,43 @@ public class Position {
         return column;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public boolean validPosition() {
+        return row >= 0 && row < 8 && column >= 0 && column < 8;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
+    public List<Position> getInBetweenPositions(Position otherPosition) {
+        List<Position> positions = new ArrayList<>();
+
+        if (row == otherPosition.getRow()) {
+            for (int i = 1; i < Math.max(column, otherPosition.getColumn()); i++) {
+                positions.add(new Position(row, Math.min(column, otherPosition.getColumn()) + i));
+            }
+        } else if (column == otherPosition.getColumn()) {
+            for (int i = 1; i < Math.max(row, otherPosition.getRow()); i++) {
+                positions.add(new Position(Math.min(row, otherPosition.getRow()) + i, column));
+            }
+        } else if (Math.abs(row - otherPosition.getRow()) == Math.abs(column - otherPosition.getColumn())) {
+            int rowOffset;
+            int columnOffset;
+
+            if (row < otherPosition.getRow()) {
+                rowOffset = 1;
+            } else {
+                rowOffset = -1;
+            }
+
+            if (column < otherPosition.getColumn()) {
+                columnOffset = 1;
+            } else {
+                columnOffset = -1;
+            }
+
+            for (int i = 1; i < Math.abs(row - otherPosition.getRow()); i++) {
+                positions.add(new Position(row + rowOffset * i, column + columnOffset * i));
+            }
+        }
+
+        return positions;
     }
 
     @Override
