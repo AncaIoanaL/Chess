@@ -11,6 +11,11 @@ public class Position {
         this.column = column;
     }
 
+    public Position(Position position, int rowOffset, int columnOffset) {
+        this.row = position.getRow() + rowOffset;
+        this.column = position.getColumn() + columnOffset;
+    }
+
     public int getRow() {
         return row;
     }

@@ -13,30 +13,30 @@ public class King extends Piece {
     @Override
     public void move(Position newPosition, Board board) {
         int difference = newPosition.getColumn() - getCurrentPosition().getColumn();
-        isCastling = true;
 
-        if (validateCastling(newPosition, board)) {
+        if (isCastling) {
             if (Colour.WHITE.equals(getColour())) {
-                Piece whiteRook = board.getPiece(7, 7);
                 if (difference > 0) {
-                    whiteRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 1), board);
+                    Piece whiteRook = board.getPiece(7, 7);
+                    whiteRook.move(new Position(whiteRook.getCurrentPosition(), 0, -2), board);
                 } else {
-                    whiteRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + 1), board);
+                    Piece whiteRook = board.getPiece(7, 0);
+                    whiteRook.move(new Position(whiteRook.getCurrentPosition(), 0, 3), board);
                 }
             } else {
-                Piece blackRook = board.getPiece(0, 7);
-
                 if (difference > 0) {
-                    blackRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() - 1), board);
+                    Piece blackRook = board.getPiece(0, 7);
+                    blackRook.move(new Position(blackRook.getCurrentPosition(), 0, -2), board);
                 } else {
-                    blackRook.move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + 1), board);
+                    Piece blackRook = board.getPiece(0, 0);
+                    blackRook.move(new Position(blackRook.getCurrentPosition(), 0, 3), board);
                 }
             }
 
-            isCastling = false;
-        } else {
-            super.move(newPosition, board);
         }
+
+        isCastling = false;
+        super.move(newPosition, board);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class King extends Piece {
         validateInBetweenPositions(new Position(row - Math.min(row, column), column - Math.min(row, column)), board, PieceType.BISHOP);
 
         //right up
-        validateInBetweenPositions(new Position(row - Math.min(row, 7 -  column), column + Math.min(row, 7 - column)), board, PieceType.BISHOP);
+        validateInBetweenPositions(new Position(row - Math.min(row, 7 - column), column + Math.min(row, 7 - column)), board, PieceType.BISHOP);
 
         // left down
         validateInBetweenPositions(new Position(row + Math.min(7 - row, column), column - Math.min(7 - row, column)), board, PieceType.BISHOP);
@@ -148,43 +148,43 @@ public class King extends Piece {
     }
 
     private boolean validateCastling(Position newPosition, Board board) {
-        int difference = newPosition.getColumn() - getCurrentPosition().getColumn();
-        if (getCurrentPosition() != initialPosition && Math.abs(difference) != 2) {
+        int columnDifference = newPosition.getColumn() - getCurrentPosition().getColumn();
+        if (getCurrentPosition() != initialPosition || getCurrentPosition().getRow() != newPosition.getRow() || Math.abs(columnDifference) != 2) {
             return false;
         }
 
-        if (difference > 0) {
+        if (columnDifference > 0) {
             for (int i = 1; i <= 2; i++) {
                 Piece pieceToValidate = board.getPiece(getCurrentPosition(), 0, i);
-                if (pieceToValidate != null && getCurrentPosition().getRow() != newPosition.getRow()) {
+                if (pieceToValidate != null) {
                     return false;
                 }
             }
 
             Piece rook = board.getPiece(getCurrentPosition(), 0, 3);
-            if (!PieceType.ROOK.equals(rook.getPieceType()) || rook.getCount() == 0) {
+            if (rook == null || !PieceType.ROOK.equals(rook.getPieceType()) || rook.getMovesCounter() != 0) {
                 return false;
             }
 
             for (int i = 0; i <= 2; i++) {
-                move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + i), board);
+                move(new Position(getCurrentPosition(), 0, i), board);
                 validateCheck(board);
             }
         } else {
             for (int i = 1; i <= 3; i++) {
                 Piece pieceToValidate = board.getPiece(getCurrentPosition(), 0, -i);
-                if (pieceToValidate != null && getCurrentPosition().getRow() != newPosition.getRow()) {
+                if (pieceToValidate != null) {
                     return false;
                 }
             }
 
             Piece rook = board.getPiece(getCurrentPosition(), 0, -4);
-            if (!PieceType.ROOK.equals(rook.getPieceType()) || rook.getCount() == 0) {
+            if (rook == null || !PieceType.ROOK.equals(rook.getPieceType()) || rook.getMovesCounter() != 0) {
                 return false;
             }
 
             for (int i = 0; i <= 2; i++) {
-                move(new Position(getCurrentPosition().getRow(), getCurrentPosition().getColumn() + i), board);
+                move(new Position(getCurrentPosition(), 0, -i), board);
                 validateCheck(board);
             }
         }
