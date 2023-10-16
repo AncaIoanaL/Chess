@@ -88,9 +88,9 @@ public class King extends Piece {
 
     private void validateRookCheck(Board board) {
         validateInBetweenPositions(new Position(getCurrentPosition().getRow(), 0), board, PieceType.ROOK);
-        validateInBetweenPositions(new Position(getCurrentPosition().getRow(), 8), board, PieceType.ROOK);
+        validateInBetweenPositions(new Position(getCurrentPosition().getRow(), 7), board, PieceType.ROOK);
         validateInBetweenPositions(new Position(0, getCurrentPosition().getColumn()), board, PieceType.ROOK);
-        validateInBetweenPositions(new Position(8, getCurrentPosition().getColumn()), board, PieceType.ROOK);
+        validateInBetweenPositions(new Position(7, getCurrentPosition().getColumn()), board, PieceType.ROOK);
     }
 
     private void validatePawnCheck(Board board) {
