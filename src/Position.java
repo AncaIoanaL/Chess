@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Position {
@@ -31,33 +32,33 @@ public class Position {
     public List<Position> getInBetweenPositions(Position otherPosition) {
         List<Position> positions = new ArrayList<>();
 
+        int rowOffset;
+        int columnOffset;
+
+        if (row < otherPosition.getRow()) {
+            rowOffset = 1;
+        } else {
+            rowOffset = -1;
+        }
+
+        if (column < otherPosition.getColumn()) {
+            columnOffset = 1;
+        } else {
+            columnOffset = -1;
+        }
+
         // moving horizontally
         if (row == otherPosition.getRow()) {
             for (int i = 1; i < Math.max(column, otherPosition.getColumn()); i++) {
-                positions.add(new Position(row, Math.min(column, otherPosition.getColumn()) + i));
+                positions.add(new Position(row, column + columnOffset * i));
             }
         // moving vertically
         } else if (column == otherPosition.getColumn()) {
             for (int i = 1; i < Math.max(row, otherPosition.getRow()); i++) {
-                positions.add(new Position(Math.min(row, otherPosition.getRow()) + i, column));
+                positions.add(new Position(row + rowOffset * i, column));
             }
         // moving diagonally
         } else if (Math.abs(row - otherPosition.getRow()) == Math.abs(column - otherPosition.getColumn())) {
-            int rowOffset;
-            int columnOffset;
-
-            if (row < otherPosition.getRow()) {
-                rowOffset = 1;
-            } else {
-                rowOffset = -1;
-            }
-
-            if (column < otherPosition.getColumn()) {
-                columnOffset = 1;
-            } else {
-                columnOffset = -1;
-            }
-
             for (int i = 1; i < Math.abs(row - otherPosition.getRow()); i++) {
                 positions.add(new Position(row + rowOffset * i, column + columnOffset * i));
             }

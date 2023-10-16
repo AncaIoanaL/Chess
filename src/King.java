@@ -74,23 +74,23 @@ public class King extends Piece {
         int column = getCurrentPosition().getColumn();
 
         // left up
-        validateInBetweenPositions(new Position(row - Math.min(row, column), column - Math.min(row, column)), board, PieceType.BISHOP);
+        validatePositionsForCheck(new Position(row - Math.min(row, column), column - Math.min(row, column)), board, PieceType.BISHOP);
 
         //right up
-        validateInBetweenPositions(new Position(row - Math.min(row, 7 - column), column + Math.min(row, 7 - column)), board, PieceType.BISHOP);
+        validatePositionsForCheck(new Position(row - Math.min(row, 7 - column), column + Math.min(row, 7 - column)), board, PieceType.BISHOP);
 
         // left down
-        validateInBetweenPositions(new Position(row + Math.min(7 - row, column), column - Math.min(7 - row, column)), board, PieceType.BISHOP);
+        validatePositionsForCheck(new Position(row + Math.min(7 - row, column), column - Math.min(7 - row, column)), board, PieceType.BISHOP);
 
         //right down
-        validateInBetweenPositions(new Position(row + Math.min(7 - row, 7 - column), column + Math.min(7 - row, 7 - column)), board, PieceType.BISHOP);
+        validatePositionsForCheck(new Position(row + Math.min(7 - row, 7 - column), column + Math.min(7 - row, 7 - column)), board, PieceType.BISHOP);
     }
 
     private void validateRookCheck(Board board) {
-        validateInBetweenPositions(new Position(getCurrentPosition().getRow(), 0), board, PieceType.ROOK);
-        validateInBetweenPositions(new Position(getCurrentPosition().getRow(), 7), board, PieceType.ROOK);
-        validateInBetweenPositions(new Position(0, getCurrentPosition().getColumn()), board, PieceType.ROOK);
-        validateInBetweenPositions(new Position(7, getCurrentPosition().getColumn()), board, PieceType.ROOK);
+        validatePositionsForCheck(new Position(getCurrentPosition().getRow(), 0), board, PieceType.ROOK);
+        validatePositionsForCheck(new Position(getCurrentPosition().getRow(), 7), board, PieceType.ROOK);
+        validatePositionsForCheck(new Position(0, getCurrentPosition().getColumn()), board, PieceType.ROOK);
+        validatePositionsForCheck(new Position(7, getCurrentPosition().getColumn()), board, PieceType.ROOK);
     }
 
     private void validatePawnCheck(Board board) {
@@ -98,15 +98,15 @@ public class King extends Piece {
         int column = getCurrentPosition().getColumn();
 
         if (Colour.WHITE.equals(getColour())) {
-            validateInBetweenPositions(new Position(row - 1, column + 1), board, PieceType.PAWN);
-            validateInBetweenPositions(new Position(row - 1, column - 1), board, PieceType.PAWN);
+            validatePositionsForCheck(new Position(row - 1, column + 1), board, PieceType.PAWN);
+            validatePositionsForCheck(new Position(row - 1, column - 1), board, PieceType.PAWN);
         } else {
-            validateInBetweenPositions(new Position(row + 1, column + 1), board, PieceType.PAWN);
-            validateInBetweenPositions(new Position(row + 1, column - 1), board, PieceType.PAWN);
+            validatePositionsForCheck(new Position(row + 1, column + 1), board, PieceType.PAWN);
+            validatePositionsForCheck(new Position(row + 1, column - 1), board, PieceType.PAWN);
         }
     }
 
-    private void validateInBetweenPositions(Position newPosition, Board board, PieceType pieceType) {
+    private void validatePositionsForCheck(Position newPosition, Board board, PieceType pieceType) {
         List<Position> inBetweenPositions = getCurrentPosition().getInBetweenPositions(newPosition);
         inBetweenPositions.add(newPosition);
 
@@ -117,6 +117,8 @@ public class King extends Piece {
                 if (pieceToValidate != null) {
                     if (pieceToValidate.getColour() != getColour() && (pieceType.equals(pieceToValidate.getPieceType()) || PieceType.QUEEN.equals(pieceToValidate.getPieceType()))) {
                         throw new InvalidMoveDueToCheckException();
+                    } else {
+                        return;
                     }
                 }
             }
