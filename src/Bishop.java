@@ -21,7 +21,7 @@ public class Bishop extends Piece {
 
     @Override
     public PieceType getPieceType() {
-        return PieceType.KING;
+        return PieceType.BISHOP;
     }
 
     private boolean validateBishopMove(Position newPosition) {

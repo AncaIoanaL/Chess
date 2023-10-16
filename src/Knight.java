@@ -4,8 +4,6 @@ public class Knight extends Piece {
         super(colour, currentPosition);
     }
 
-
-
     @Override
     public void move(Position newPosition, Board board) {
         super.move(newPosition, board);

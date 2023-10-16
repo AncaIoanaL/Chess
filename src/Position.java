@@ -26,14 +26,17 @@ public class Position {
     public List<Position> getInBetweenPositions(Position otherPosition) {
         List<Position> positions = new ArrayList<>();
 
+        // moving left & right
         if (row == otherPosition.getRow()) {
             for (int i = 1; i < Math.max(column, otherPosition.getColumn()); i++) {
                 positions.add(new Position(row, Math.min(column, otherPosition.getColumn()) + i));
             }
+        // moving up & down
         } else if (column == otherPosition.getColumn()) {
             for (int i = 1; i < Math.max(row, otherPosition.getRow()); i++) {
                 positions.add(new Position(Math.min(row, otherPosition.getRow()) + i, column));
             }
+        // moving diagonally
         } else if (Math.abs(row - otherPosition.getRow()) == Math.abs(column - otherPosition.getColumn())) {
             int rowOffset;
             int columnOffset;

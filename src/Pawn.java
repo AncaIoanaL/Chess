@@ -57,7 +57,8 @@ public class Pawn extends Piece {
 
     private boolean validatePawnEnPassant(Position newPosition, Board board) {
         if (Colour.BLACK.equals(getColour())) {
-            if (!(board.getPiece(newPosition, -1, 0) instanceof Pawn whitePawn) || !(board.getPiece(newPosition, -2, 0) instanceof Pawn otherBlackPawn)) {
+            if (!(board.getPiece(newPosition, -1, 0) instanceof Pawn whitePawn) ||
+                    !(board.getPiece(newPosition, -2, 0) instanceof Pawn otherBlackPawn)) {
                 return false;
             }
 
